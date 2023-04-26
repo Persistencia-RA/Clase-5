@@ -1,14 +1,14 @@
-version: " 3.9  "
+version: ' 3.9  '
 services:
   db:
     image: mariadb:10.7.8-focal
     restart: always
     environment:
-      MYSQL_DATABASE: persistencia
+      MYSQL_DATABASE: api
       MYSQL_USER: root
       MYSQL_PASSWORD: root
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - "3310:3306"
+      - '3310:3306'
     volumes:
       - ./base_datos:/var/lib/mysql
