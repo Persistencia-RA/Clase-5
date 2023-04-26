@@ -2,7 +2,8 @@
   "development": {
     "username": "root",
     "password": "root",
-    "database": "api_v1",
+    "database": "api",
+    "port": 3310,
     "host": "localhost",
     "dialect": "mariadb",
     "operatorsAliases": false
