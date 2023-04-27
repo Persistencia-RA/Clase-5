@@ -5,7 +5,6 @@
     "database": "api",
     "port": 3310,
     "host": "localhost",
-    "dialect": "mariadb",
-    "operatorsAliases": false
+    "dialect": "mariadb"
   }
 }
