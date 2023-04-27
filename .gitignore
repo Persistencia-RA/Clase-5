@@ -2,3 +2,4 @@
 /node_modules
 /base_datos
 .eslintcache
+.env

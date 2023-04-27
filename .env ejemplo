@@ -1,0 +1,10 @@
+# Base de datos
+DATABASENAME = 'api'
+DATABASEUSER = 'root'
+DATABASEPASSWORD = 'root'
+DATABASEHOST = 'localhost'
+DATABASEPORT = 3310
+DATABASEDIALECT = 'mariadb'
+
+#Api
+PORT = 5000
