@@ -27,7 +27,7 @@ app.use('/car', carrerasRouter);
 
 app.use('/mat', materiaRouter);
 
-app.use('/aula', aulaRouter);
+app.use('/aul', aulaRouter);
 app.use('/prof', profesorRouter);
 app.use('/alum', alumnosRouter);
 // catch 404 and forward to error handler
