@@ -6,6 +6,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const carrerasRouter = require('./routes/carreras');
 const materiaRouter = require('./routes/materias');
+const aulaRouter = require('./routes/aulas');
+const profesorRouter = require('./routes/profesor');
+const alumnosRouter = require('./routes/alumnos');
 
 const app = express();
 
@@ -23,6 +26,10 @@ app.use('/car', carrerasRouter);
 // catch 404 and forward to error handler
 
 app.use('/mat', materiaRouter);
+
+app.use('/aula', aulaRouter);
+app.use('/prof', profesorRouter);
+app.use('/alum', alumnosRouter);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {
