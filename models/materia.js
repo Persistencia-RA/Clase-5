@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
   const materia = sequelize.define(
     'materia',
@@ -6,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       id_carrera: DataTypes.INTEGER,
       nombre: DataTypes.STRING,
     },
-    {},
+    { tableName: 'materia' },
   );
   materia.associate = function (models) {
     // asociación con modelo carrera

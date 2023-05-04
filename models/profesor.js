@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
   const profesor = sequelize.define(
     'profesor',
@@ -8,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       nombre: DataTypes.STRING,
       apellido: DataTypes.STRING,
     },
-    {},
+    { tableName: 'profesor' },
   );
   profesor.associate = function (models) {
     // asociación con modelo carrera
