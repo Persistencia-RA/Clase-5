@@ -1,20 +1,29 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.bulkInsert(
-      'carrera',
+      'materia',
       [
         {
-          nombre: 'Ingeniería en Sistemas',
+          id_carrera: 1,
+          nombre: 'Programación I',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          nombre: 'Licenciatura en Administración de Empresas',
+          id_carrera: 1,
+          nombre: 'Base de Datos',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          nombre: 'Licenciatura en Derecho',
+          id_carrera: 2,
+          nombre: 'Contabilidad',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id_carrera: 3,
+          nombre: 'Derecho Constitucional',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -24,6 +33,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('carrera', null, {});
+    await queryInterface.bulkDelete('materia', null, {});
   },
 };

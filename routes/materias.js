@@ -6,7 +6,6 @@ router.get('/', (req, res, next) => {
   models.materia
     .findAll({
       attributes: ['id', 'nombre'],
-
       include: [
         { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
       ],
@@ -37,6 +36,9 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
   models.materia
     .findOne({
       attributes: ['id', 'id_carrera', 'nombre'],
+      include: [
+        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+      ],
       where: { id },
     })
     .then((materia) => (materia ? onSuccess(materia) : onNotFound()))

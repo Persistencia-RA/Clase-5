@@ -8,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'materia' },
   );
   materia.associate = function (models) {
-    // asociación con modelo carrera
     materia.belongsTo(models.carrera, {
       foreignKey: 'id_carrera',
       as: 'carrera',

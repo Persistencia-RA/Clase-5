@@ -6,12 +6,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     { tableName: 'carrera' },
   );
-  carrera.associate = function (models) {
-    // asociación con modelo materia
-    carrera.hasMany(models.materia, {
-      foreignKey: 'id_carrera',
-      as: 'materias',
-    });
-  };
+
   return carrera;
 };

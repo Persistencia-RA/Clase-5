@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
   console.log('Esto es un mensaje para ver en consola');
   models.alumno
     .findAll({
-      attributes: ['id', 'id_materia', 'id_aula', 'nombre', 'apellido'],
+      attributes: ['id', 'nombre', 'apellido'],
       include: [
         { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
         { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
@@ -41,7 +41,11 @@ router.post('/', (req, res) => {
 const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
   models.alumno
     .findOne({
-      attributes: ['id', 'id_materia', 'id_aula', 'nombre', 'apellido'],
+      attributes: ['id', 'nombre', 'apellido'],
+      include: [
+        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
+        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+      ],
       where: { id },
     })
     .then((alumno) => (alumno ? onSuccess(alumno) : onNotFound()))
