@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "seed": "npx sequelize-cli db:seed:all",
+    "migrate": "npx sequelize db:migrate"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
