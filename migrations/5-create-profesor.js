@@ -11,7 +11,10 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       id_aula: {
-        type: Sequelize.INTEGER,
+        type: Seyyy
+        
+        
+        quelize.INTEGER,
       },
       nombre: {
         type: Sequelize.STRING,
