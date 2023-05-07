@@ -2,24 +2,30 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
-router.get('/', (req, res, next) => {
-  models.materia
+router.get('/', (req, res) => {
+  console.log('Esto es un mensaje para ver en consola');
+  models.alumno
     .findAll({
-      attributes: ['id', 'nombre'],
+      attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
+        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
     })
-    .then((materia) => res.send(materia))
-    .catch((error) => {
-      return next(error);
-    });
+    .then((alumnos) => res.send(alumnos))
+    .catch(() => res.sendStatus(500));
 });
 
 router.post('/', (req, res) => {
-  models.materia
-    .create({ id_carrera: req.body.id_carrera, nombre: req.body.nombre })
-    .then((materia) => res.status(201).send({ id: materia.id }))
+  const r = req.body;
+  models.alumno
+    .create({
+      id_materia: r.id_materia,
+      id_aula: r.id_aula,
+      nombre: r.nombre,
+      apellido: r.apellido,
+    })
+    .then((alumno) => res.status(201).send({ id: alumno.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -32,37 +38,47 @@ router.post('/', (req, res) => {
     });
 });
 
-const findMateria = (id, { onSuccess, onNotFound, onError }) => {
-  models.materia
+const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
+  models.alumno
     .findOne({
-      attributes: ['id', 'id_carrera', 'nombre'],
+      attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
+        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
       where: { id },
     })
-    .then((materia) => (materia ? onSuccess(materia) : onNotFound()))
+    .then((alumno) => (alumno ? onSuccess(alumno) : onNotFound()))
     .catch(() => onError());
 };
 
 router.get('/:id', (req, res) => {
-  findMateria(req.params.id, {
-    onSuccess: (materia) => res.send(materia),
+  findAlumno(req.params.id, {
+    onSuccess: (alumno) => res.send(alumno),
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),
   });
 });
 
 router.put('/:id', (req, res) => {
-  const onSuccess = (materia) =>
-    materia
-      .update({ nombre: req.body.nombre }, { fields: ['nombre'] })
+  const r = req.body;
+  const onSuccess = (alumno) =>
+    alumno
+      .update(
+        {
+          id_materia: r.id_materia,
+          id_aula: r.id_aula,
+          nombre: r.nombre,
+          apellido: r.apellido,
+        },
+        { fields: ['id_materia', 'id_aula', 'nombre', 'apellido'] },
+      )
       .then(() => res.sendStatus(200))
       .catch((error) => {
         if (error === 'SequelizeUniqueConstraintError: Validation error') {
           res
             .status(400)
-            .send('Bad request: existe otra materia con el mismo nombre');
+            .send('Bad request: existe otra carrera con el mismo nombre');
         } else {
           console.log(
             `Error al intentar actualizar la base de datos: ${error}`,
@@ -70,7 +86,7 @@ router.put('/:id', (req, res) => {
           res.sendStatus(500);
         }
       });
-  findMateria(req.params.id, {
+  findAlumno(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),
@@ -78,12 +94,12 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  const onSuccess = (materia) =>
-    materia
+  const onSuccess = (alumno) =>
+    alumno
       .destroy()
       .then(() => res.sendStatus(200))
       .catch(() => res.sendStatus(500));
-  findMateria(req.params.id, {
+  findAlumno(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),

@@ -3,23 +3,20 @@ const router = express.Router();
 const models = require('../models');
 
 router.get('/', (req, res, next) => {
-  models.materia
+  models.aula
     .findAll({
-      attributes: ['id', 'nombre'],
-      include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
-      ],
+      attributes: ['id', 'numero_lab'],
     })
-    .then((materia) => res.send(materia))
+    .then((aula) => res.send(aula))
     .catch((error) => {
       return next(error);
     });
 });
 
 router.post('/', (req, res) => {
-  models.materia
-    .create({ id_carrera: req.body.id_carrera, nombre: req.body.nombre })
-    .then((materia) => res.status(201).send({ id: materia.id }))
+  models.aula
+    .create({ numero_lab: req.body.numero_lab })
+    .then((aula) => res.status(201).send({ id: aula.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -32,37 +29,34 @@ router.post('/', (req, res) => {
     });
 });
 
-const findMateria = (id, { onSuccess, onNotFound, onError }) => {
-  models.materia
+const findAula = (id, { onSuccess, onNotFound, onError }) => {
+  models.aula
     .findOne({
-      attributes: ['id', 'id_carrera', 'nombre'],
-      include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
-      ],
+      attributes: ['id', 'numero_lab'],
       where: { id },
     })
-    .then((materia) => (materia ? onSuccess(materia) : onNotFound()))
+    .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
     .catch(() => onError());
 };
 
 router.get('/:id', (req, res) => {
-  findMateria(req.params.id, {
-    onSuccess: (materia) => res.send(materia),
+  findAula(req.params.id, {
+    onSuccess: (aula) => res.send(aula),
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),
   });
 });
 
 router.put('/:id', (req, res) => {
-  const onSuccess = (materia) =>
-    materia
-      .update({ nombre: req.body.nombre }, { fields: ['nombre'] })
+  const onSuccess = (aula) =>
+    aula
+      .update({ numero_lab: req.body.numero_lab }, { fields: ['numero_lab'] })
       .then(() => res.sendStatus(200))
       .catch((error) => {
         if (error === 'SequelizeUniqueConstraintError: Validation error') {
           res
             .status(400)
-            .send('Bad request: existe otra materia con el mismo nombre');
+            .send('Bad request: existe otra carrera con el mismo nombre');
         } else {
           console.log(
             `Error al intentar actualizar la base de datos: ${error}`,
@@ -70,7 +64,7 @@ router.put('/:id', (req, res) => {
           res.sendStatus(500);
         }
       });
-  findMateria(req.params.id, {
+  findAula(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),
@@ -78,12 +72,12 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  const onSuccess = (materia) =>
-    materia
+  const onSuccess = (aula) =>
+    aula
       .destroy()
       .then(() => res.sendStatus(200))
       .catch(() => res.sendStatus(500));
-  findMateria(req.params.id, {
+  findAula(req.params.id, {
     onSuccess,
     onNotFound: () => res.sendStatus(404),
     onError: () => res.sendStatus(500),
