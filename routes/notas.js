@@ -38,16 +38,17 @@ router.post('/', (req, res) => {
 });
 
 const findNota = (id, { onSuccess, onNotFound, onError }) => {
+  console.log('Hola');
   models.nota
     .findOne({
       attributes: ['id', 'calificacion'],
       include: [
-        { as: 'alumno', model: models.aula, attributes: ['id', 'nombre'] },
+        { as: 'alumno', model: models.alumno, attributes: ['id', 'nombre'] },
         { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
       where: { id },
     })
-    .then((notas) => (notas ? onSuccess(notas) : onNotFound()))
+    .then((nota) => (nota ? onSuccess(nota) : onNotFound()))
     .catch(() => onError());
 };
 
