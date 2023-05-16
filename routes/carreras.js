@@ -5,6 +5,42 @@ const models = require('../models');
 /**
  * @swagger
  * /carrera:
+ *   get:
+ *     summary: Obtiene todas las carreras
+ *     tags:
+ *       - Carreras
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la carrera
+ *                   nombre:
+ *                     type: string
+ *                     description: Nombre de la carrera
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/', (req, res) => {
+  console.log('Esto es un mensaje para ver en consola');
+  models.carrera
+    .findAll({
+      attributes: ['id', 'nombre'],
+    })
+    .then((carreras) => res.send(carreras))
+    .catch(() => res.sendStatus(500));
+});
+
+/**
+ * @swagger
+ * /carrera:
  *   post:
  *     summary: Crea una nueva carrera
  *     tags: [Carreras]
@@ -56,42 +92,6 @@ router.post('/', (req, res) => {
         res.sendStatus(500);
       }
     });
-});
-
-/**
- * @swagger
- * /carrera:
- *   get:
- *     summary: Obtiene todas las carreras
- *     tags:
- *       - Carreras
- *     responses:
- *       200:
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: ID de la carrera
- *                   nombre:
- *                     type: string
- *                     description: Nombre de la carrera
- *       500:
- *         description: Error interno del servidor
- */
-router.get('/', (req, res) => {
-  console.log('Esto es un mensaje para ver en consola');
-  models.carrera
-    .findAll({
-      attributes: ['id', 'nombre'],
-    })
-    .then((carreras) => res.send(carreras))
-    .catch(() => res.sendStatus(500));
 });
 
 /**

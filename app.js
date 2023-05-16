@@ -33,7 +33,7 @@ app.use('/mat', materiaRouter);
 
 app.use('/aul', aulaRouter);
 app.use('/prof', profesorRouter);
-app.use('/alum', alumnosRouter);
+app.use('/alumno', alumnosRouter);
 app.use('/nota', notasRouter);
 
 // catch 404 and forward to error handler
