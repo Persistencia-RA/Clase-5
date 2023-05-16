@@ -2,6 +2,32 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+/**
+ * @swagger
+ * /aula:
+ *   get:
+ *     summary: Obtiene todas las aulas
+ *     tags:
+ *       - Aulas
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID del aula
+ *                   numero_lab:
+ *                     type: string
+ *                     description: Número de laboratorio del aula
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/', (req, res, next) => {
   models.aula
     .findAll({
@@ -13,6 +39,39 @@ router.get('/', (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /aula:
+ *   post:
+ *     summary: Crea una nueva aula
+ *     tags:
+ *       - Aulas
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               numero_lab:
+ *                 type: string
+ *                 description: Número de laboratorio del aula
+ *     responses:
+ *       201:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID del aula creado
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.post('/', (req, res) => {
   models.aula
     .create({ numero_lab: req.body.numero_lab })
@@ -39,6 +98,38 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
     .catch(() => onError());
 };
 
+/**
+ * @swagger
+ * /aula/{id}:
+ *   get:
+ *     summary: Obtiene un aula por ID
+ *     tags:
+ *       - Aulas
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del aula a obtener
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID del aula
+ *                 numero_lab:
+ *                   type: string
+ *                   description: Número de laboratorio del aula
+ *       404:
+ *         description: Aula no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/:id', (req, res) => {
   findAula(req.params.id, {
     onSuccess: (aula) => res.send(aula),
@@ -47,6 +138,39 @@ router.get('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /aula/{id}:
+ *   put:
+ *     summary: Actualiza un aula por ID
+ *     tags:
+ *       - Aulas
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del aula a actualizar
+ *         required: true
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               numero_lab:
+ *                 type: string
+ *                 description: Número de laboratorio del aula
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Aula no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.put('/:id', (req, res) => {
   const onSuccess = (aula) =>
     aula
@@ -71,6 +195,27 @@ router.put('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /aula/{id}:
+ *   delete:
+ *     summary: Elimina un aula por ID
+ *     tags:
+ *       - Aulas
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID del aula a eliminar
+ *         required: true
+ *         type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Aula no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.delete('/:id', (req, res) => {
   const onSuccess = (aula) =>
     aula

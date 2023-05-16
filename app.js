@@ -31,7 +31,7 @@ app.use('/carrera', carrerasRouter);
 
 app.use('/mat', materiaRouter);
 
-app.use('/aul', aulaRouter);
+app.use('/aula', aulaRouter);
 app.use('/prof', profesorRouter);
 app.use('/alumno', alumnosRouter);
 app.use('/nota', notasRouter);
