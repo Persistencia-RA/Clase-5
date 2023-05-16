@@ -19,7 +19,7 @@ const models = require('../models');
  *               items:
  *                 type: object
  *                 properties:
- *                    id:
+ *                   id:
  *                     type: integer
  *                     description: ID del alumno
  *                   id_materia:
