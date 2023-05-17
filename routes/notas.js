@@ -2,6 +2,38 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+/**
+ * @swagger
+ * /nota:
+ *   get:
+ *     summary: Obtiene todas las notas
+ *     tags:
+ *       - Notas
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la nota
+ *                   id_alumno:
+ *                     type: integer
+ *                     description: ID del alumno
+ *                   id_materia:
+ *                     type: integer
+ *                     description: ID de la materia
+ *                   calificacion:
+ *                     type: integer
+ *                     description: Calificación de la materia
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/', (req, res) => {
   console.log('Esto es un mensaje para ver en consola');
   models.nota
@@ -16,6 +48,52 @@ router.get('/', (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 
+/**
+ * @swagger
+ * /nota:
+ *   post:
+ *     summary: Crea una nueva nota
+ *     tags: [Notas]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_alumno:
+ *                 type: integer
+ *                 description: ID del alumno
+ *               id_materia:
+ *                 type: integer
+ *                 description: ID de la materia
+ *               calificacion:
+ *                 type: integer
+ *                 description: Calificación de la materia
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la nota
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.post('/', (req, res) => {
   const r = req.body;
   models.nota
@@ -52,6 +130,44 @@ const findNota = (id, { onSuccess, onNotFound, onError }) => {
     .catch(() => onError());
 };
 
+/**
+ * @swagger
+ * /nota/{id}:
+ *   get:
+ *     summary: Obtiene una nota por su ID
+ *     tags:
+ *       - Notas
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la nota
+ *                 id_alumno:
+ *                   type: integer
+ *                   description: ID del alumno
+ *                 id_materia:
+ *                   type: integer
+ *                   description: ID de la materia
+ *                 calificacion:
+ *                   type: integer
+ *                   description: Calificación de la materia
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/:id', (req, res) => {
   findNota(req.params.id, {
     onSuccess: (nota) => res.send(nota),
@@ -60,6 +176,53 @@ router.get('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /nota/{id}:
+ *   put:
+ *     summary: Actualiza una nota por su ID
+ *     tags:
+ *       - Notas
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Datos de la nota a actualizar
+ *         required: true
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_alumno:
+ *                 type: integer
+ *                 description: ID del alumno
+ *               id_materia:
+ *                 type: integer
+ *                 description: ID de la materia
+ *               calificacion:
+ *                 type: integer
+ *                 description: Calificación de la materia
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       404:
+ *         description: Nota no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.put('/:id', (req, res) => {
   const r = req.body;
   const onSuccess = (nota) =>
@@ -92,6 +255,26 @@ router.put('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /nota/{id}:
+ *   delete:
+ *     summary: Elimina una nota por su ID
+ *     tags: [Notas]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Nota no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.delete('/:id', (req, res) => {
   const onSuccess = (nota) =>
     nota

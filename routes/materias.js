@@ -2,6 +2,35 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+/**
+ * @swagger
+ * /materia:
+ *   get:
+ *     summary: Obtiene todas las materias
+ *     tags:
+ *       - Materias
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la materia
+ *                   id_carrera:
+ *                     type: integer
+ *                     description: ID de la carrera
+ *                   nombre:
+ *                     type: string
+ *                     description: Nombre de la materia
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/', (req, res, next) => {
   models.materia
     .findAll({
@@ -16,6 +45,49 @@ router.get('/', (req, res, next) => {
     });
 });
 
+/**
+ * @swagger
+ * /materia:
+ *   post:
+ *     summary: Crea una nueva materia
+ *     tags: [Materias]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_carrera:
+ *                 type: integer
+ *                 description: ID de la carrera
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la materia
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la carrera materia
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.post('/', (req, res) => {
   models.materia
     .create({ id_carrera: req.body.id_carrera, nombre: req.body.nombre })
@@ -45,6 +117,41 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
     .catch(() => onError());
 };
 
+/**
+ * @swagger
+ * /materia/{id}:
+ *   get:
+ *     summary: Obtiene una materia por su ID
+ *     tags:
+ *       - Materias
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la materia
+ *                 id_carrera:
+ *                   type: integer
+ *                   description: ID de la carrera
+ *                 nombre:
+ *                   type: string
+ *                   description: Nombre de la materia
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/:id', (req, res) => {
   findMateria(req.params.id, {
     onSuccess: (materia) => res.send(materia),
@@ -53,6 +160,50 @@ router.get('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /materia/{id}:
+ *   put:
+ *     summary: Actualiza una materia por su ID
+ *     tags:
+ *       - Materias
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: Datos de la materia a actualizar
+ *         required: true
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id_carrera:
+ *                 type: integer
+ *                 description: ID de la carrera
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la materia
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.put('/:id', (req, res) => {
   const onSuccess = (materia) =>
     materia
@@ -77,6 +228,26 @@ router.put('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /materia/{id}:
+ *   delete:
+ *     summary: Elimina una materia por su ID
+ *     tags: [Materias]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Materia no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.delete('/:id', (req, res) => {
   const onSuccess = (materia) =>
     materia

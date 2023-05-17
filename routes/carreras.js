@@ -139,23 +139,24 @@ router.get('/:id', (req, res) => {
  * /carrera/{id}:
  *   put:
  *     summary: Actualiza una carrera por su ID
- *     tags: [Carreras]
+ *     tags:
+ *       - Carreras
  *     parameters:
- *       - in: path
- *         name: id
+ *       - name: id
+ *         in: path
+ *         description: ID de la carrea a actualizar
  *         required: true
- *         schema:
- *           type: integer
- *       - in: body
- *         name: body
- *         description: Datos de la carrera a actualizar
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             nombre:
- *               type: string
- *               description: Nuevo nombre de la carrera
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nuevo nombre de la carrera
  *     responses:
  *       200:
  *         description: OK

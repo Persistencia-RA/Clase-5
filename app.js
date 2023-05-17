@@ -29,10 +29,10 @@ app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use('/carrera', carrerasRouter);
 // catch 404 and forward to error handler
 
-app.use('/mat', materiaRouter);
+app.use('/materia', materiaRouter);
 
 app.use('/aula', aulaRouter);
-app.use('/prof', profesorRouter);
+app.use('/profesor', profesorRouter);
 app.use('/alumno', alumnosRouter);
 app.use('/nota', notasRouter);
 
