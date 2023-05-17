@@ -58,7 +58,6 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-
   models.aula
     .findAndCountAll({
       attributes: ['id', 'numero_lab'],
@@ -70,7 +69,6 @@ router.get('/', (req, res, next) => {
       const totalCount = result.count;
 
       const totalPages = Math.ceil(totalCount / pageSize);
-
       res.send({
         aulas,
         currentPage: page,

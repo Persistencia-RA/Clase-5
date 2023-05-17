@@ -9,6 +9,19 @@ const models = require('../models');
  *     summary: Obtiene todos los alumnos
  *     tags:
  *       - Alumnos
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
  *         description: OK
@@ -34,21 +47,48 @@ const models = require('../models');
  *                   apellido:
  *                     type: string
  *                     description: Apellido del alumno
+ *               currentPage:
+ *                  type: integer
+ *                  description: Página actual
+ *               totalPages:
+ *                 type: integer
+ *                 description: Número total de páginas
+ *               totalCount:
+ *                 type: integer
+ *                 description: Total de aulas
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res) => {
-  console.log('Esto es un mensaje para ver en consola');
+router.get('/', (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+
+  const offset = (page - 1) * pageSize;
   models.alumno
-    .findAll({
+    .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
         { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
         { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
+      limit: pageSize,
+      offset,
     })
-    .then((alumnos) => res.send(alumnos))
-    .catch(() => res.sendStatus(500));
+    .then((result) => {
+      const alumnos = result.rows;
+      const totalCount = result.count;
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      res.send({
+        alumnos,
+        currentPage: page,
+        totalPages,
+        totalCount,
+      });
+    })
+    .catch((error) => {
+      return next(error);
+    });
 });
 
 /**
