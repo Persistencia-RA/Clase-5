@@ -64,7 +64,7 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.carrera
+  models.profesor
     .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
@@ -75,12 +75,12 @@ router.get('/', (req, res, next) => {
       offset,
     })
     .then((result) => {
-      const carreras = result.rows;
+      const profesores = result.rows;
       const totalCount = result.count;
 
       const totalPages = Math.ceil(totalCount / pageSize);
       res.send({
-        carreras,
+        profesores,
         currentPage: page,
         totalPages,
         totalCount,
