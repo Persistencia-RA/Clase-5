@@ -1,3 +1,5 @@
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('./swagger');
 require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
@@ -22,16 +24,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use('/car', carrerasRouter);
+app.use('/carrera', carrerasRouter);
 // catch 404 and forward to error handler
 
-app.use('/mat', materiaRouter);
+app.use('/materia', materiaRouter);
 
-app.use('/aul', aulaRouter);
-app.use('/prof', profesorRouter);
-app.use('/alum', alumnosRouter);
+app.use('/aula', aulaRouter);
+app.use('/profesor', profesorRouter);
+app.use('/alumno', alumnosRouter);
 app.use('/nota', notasRouter);
+
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {

@@ -2,6 +2,32 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 
+/**
+ * @swagger
+ * /carrera:
+ *   get:
+ *     summary: Obtiene todas las carreras
+ *     tags:
+ *       - Carreras
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     description: ID de la carrera
+ *                   nombre:
+ *                     type: string
+ *                     description: Nombre de la carrera
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/', (req, res) => {
   console.log('Esto es un mensaje para ver en consola');
   models.carrera
@@ -12,6 +38,46 @@ router.get('/', (req, res) => {
     .catch(() => res.sendStatus(500));
 });
 
+/**
+ * @swagger
+ * /carrera:
+ *   post:
+ *     summary: Crea una nueva carrera
+ *     tags: [Carreras]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nombre de la carrera
+ *     responses:
+ *       201:
+ *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la carrera creada
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.post('/', (req, res) => {
   models.carrera
     .create({ nombre: req.body.nombre })
@@ -28,16 +94,38 @@ router.post('/', (req, res) => {
     });
 });
 
-const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
-  models.carrera
-    .findOne({
-      attributes: ['id', 'nombre'],
-      where: { id },
-    })
-    .then((carrera) => (carrera ? onSuccess(carrera) : onNotFound()))
-    .catch(() => onError());
-};
-
+/**
+ * @swagger
+ * /carrera/{id}:
+ *   get:
+ *     summary: Obtiene una carrera por su ID
+ *     tags:
+ *       - Carreras
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   description: ID de la carrera
+ *                 nombre:
+ *                   type: string
+ *                   description: Nombre de la carrera
+ *       404:
+ *         description: Carrera no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.get('/:id', (req, res) => {
   findCarrera(req.params.id, {
     onSuccess: (carrera) => res.send(carrera),
@@ -46,6 +134,47 @@ router.get('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /carrera/{id}:
+ *   put:
+ *     summary: Actualiza una carrera por su ID
+ *     tags:
+ *       - Carreras
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: ID de la carrea a actualizar
+ *         required: true
+ *         type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nombre:
+ *                 type: string
+ *                 description: Nuevo nombre de la carrera
+ *     responses:
+ *       200:
+ *         description: OK
+ *       400:
+ *         description: Solicitud incorrecta
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Mensaje de error
+ *       404:
+ *         description: Carrera no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.put('/:id', (req, res) => {
   const onSuccess = (carrera) =>
     carrera
@@ -70,6 +199,26 @@ router.put('/:id', (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /carrera/{id}:
+ *   delete:
+ *     summary: Elimina una carrera por su ID
+ *     tags: [Carreras]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Carrera no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
 router.delete('/:id', (req, res) => {
   const onSuccess = (carrera) =>
     carrera
@@ -82,5 +231,15 @@ router.delete('/:id', (req, res) => {
     onError: () => res.sendStatus(500),
   });
 });
+
+const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
+  models.carrera
+    .findOne({
+      attributes: ['id', 'nombre'],
+      where: { id },
+    })
+    .then((carrera) => (carrera ? onSuccess(carrera) : onNotFound()))
+    .catch(() => onError());
+};
 
 module.exports = router;
