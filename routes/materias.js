@@ -9,6 +9,19 @@ const models = require('../models');
  *     summary: Obtiene todas las materias
  *     tags:
  *       - Materias
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
  *         description: OK
@@ -28,18 +41,45 @@ const models = require('../models');
  *                   nombre:
  *                     type: string
  *                     description: Nombre de la materia
+ *               currentPage:
+ *                   type: integer
+ *                   description: Página actual
+ *               totalPages:
+ *                   type: integer
+ *                   description: Número total de páginas
+ *               totalCount:
+ *                   type: integer
+ *                   description: Total de aulas
+ *
  *       500:
  *         description: Error interno del servidor
  */
 router.get('/', (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+
+  const offset = (page - 1) * pageSize;
   models.materia
-    .findAll({
+    .findAndCountAll({
       attributes: ['id', 'nombre'],
       include: [
         { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
       ],
+      limit: pageSize,
+      offset,
     })
-    .then((materia) => res.send(materia))
+    .then((result) => {
+      const materias = result.rows;
+      const totalCount = result.count;
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      res.send({
+        materias,
+        currentPage: page,
+        totalPages,
+        totalCount,
+      });
+    })
     .catch((error) => {
       return next(error);
     });

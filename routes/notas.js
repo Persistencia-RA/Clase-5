@@ -9,6 +9,19 @@ const models = require('../models');
  *     summary: Obtiene todas las notas
  *     tags:
  *       - Notas
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
  *         description: OK
@@ -31,20 +44,46 @@ const models = require('../models');
  *                   calificacion:
  *                     type: integer
  *                     description: Calificación de la materia
+ *                 currentPage:
+ *                   type: integer
+ *                   description: Página actual
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Número total de páginas
+ *                 totalCount:
+ *                   type: integer
+ *                   description: Total de aulas
  *       500:
  *         description: Error interno del servidor
  */
 router.get('/', (req, res) => {
+  const page = req.query.page || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+
+  const offset = (page - 1) * pageSize;
   console.log('Esto es un mensaje para ver en consola');
   models.nota
-    .findAll({
+    .findAndCountAll({
       attributes: ['id', 'calificacion'],
       include: [
         { as: 'alumno', model: models.alumno, attributes: ['id', 'nombre'] },
         { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
+      limit: pageSize,
+      offset,
     })
-    .then((notas) => res.send(notas))
+    .then((result) => {
+      const notas = result.rows;
+      const totalCount = result.count;
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      res.send({
+        notas,
+        currentPage: page,
+        totalPages,
+        totalCount,
+      });
+    })
     .catch(() => res.sendStatus(500));
 });
 
