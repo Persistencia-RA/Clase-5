@@ -9,6 +9,19 @@ const models = require('../models');
  *     summary: Obtiene todas las carreras
  *     tags:
  *       - Carreras
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
  *         description: OK
@@ -25,17 +38,44 @@ const models = require('../models');
  *                   nombre:
  *                     type: string
  *                     description: Nombre de la carrera
+ *               currentPage:
+ *                  type: integer
+ *                  description: Página actual
+ *               totalPages:
+ *                 type: integer
+ *                 description: Número total de páginas
+ *               totalCount:
+ *                 type: integer
+ *                 description: Total de aulas
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res) => {
-  console.log('Esto es un mensaje para ver en consola');
+router.get('/', (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+
+  const offset = (page - 1) * pageSize;
   models.carrera
-    .findAll({
+    .findAndCountAll({
       attributes: ['id', 'nombre'],
+      limit: pageSize,
+      offset,
     })
-    .then((carreras) => res.send(carreras))
-    .catch(() => res.sendStatus(500));
+    .then((result) => {
+      const carreras = result.rows;
+      const totalCount = result.count;
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      res.send({
+        carreras,
+        currentPage: page,
+        totalPages,
+        totalCount,
+      });
+    })
+    .catch((error) => {
+      return next(error);
+    });
 });
 
 /**

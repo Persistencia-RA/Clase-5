@@ -9,31 +9,73 @@ const models = require('../models');
  *     summary: Obtiene todas las aulas
  *     tags:
  *       - Aulas
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Número de página
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Tamaño de página
+ *         schema:
+ *           type: integer
+ *           default: 10
  *     responses:
  *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: ID del aula
- *                   numero_lab:
- *                     type: string
- *                     description: Número de laboratorio del aula
+ *               type: object
+ *               properties:
+ *                 aulas:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID del aula
+ *                       numero_lab:
+ *                         type: string
+ *                         description: Número de laboratorio del aula
+ *                 currentPage:
+ *                   type: integer
+ *                   description: Página actual
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Número total de páginas
+ *                 totalCount:
+ *                   type: integer
+ *                   description: Total de aulas
  *       500:
  *         description: Error interno del servidor
  */
 router.get('/', (req, res, next) => {
+  const page = req.query.page || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+
+  const offset = (page - 1) * pageSize;
   models.aula
-    .findAll({
+    .findAndCountAll({
       attributes: ['id', 'numero_lab'],
+      limit: pageSize,
+      offset,
     })
-    .then((aula) => res.send(aula))
+    .then((result) => {
+      const aulas = result.rows;
+      const totalCount = result.count;
+
+      const totalPages = Math.ceil(totalCount / pageSize);
+      res.send({
+        aulas,
+        currentPage: page,
+        totalPages,
+        totalCount,
+      });
+    })
     .catch((error) => {
       return next(error);
     });
