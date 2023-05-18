@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     { tableName: 'carrera' },
   );
-
+  carrera.associate = function (models) {
+    carrera.hasMany(models.materia);
+  };
   return carrera;
 };
