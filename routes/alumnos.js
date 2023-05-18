@@ -69,9 +69,9 @@ router.get('/', (req, res, next) => {
       attributes: ['id', 'nombre', 'apellido'],
       include: [
         {
-          as: 'materia',
           model: models.materia,
-          attributes: ['nombre'],
+          attributes: ['id', 'nombre'],
+          through: { attributes: ['notaPrimerParcial', 'notaSegundoParcial'] },
         },
       ],
       limit: pageSize,

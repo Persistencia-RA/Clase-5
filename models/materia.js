@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
   materia.associate = function (models) {
     materia.belongsTo(models.carrera);
     materia.belongsToMany(models.alumno, {
-      through: models.alumnomateria,
+      through: models.nota,
       foreignKey: 'materiaId',
     });
   };
