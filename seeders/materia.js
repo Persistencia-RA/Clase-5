@@ -4,25 +4,31 @@ module.exports = {
       'materia',
       [
         {
-          id_carrera: 1,
+          carreraId: 1,
           nombre: 'Programación I',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id_carrera: 1,
+          carreraId: 1,
           nombre: 'Base de Datos',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id_carrera: 2,
+          carreraId: 1,
+          nombre: 'Organización de computadoras',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          carreraId: 2,
           nombre: 'Contabilidad',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id_carrera: 3,
+          carreraId: 3,
           nombre: 'Derecho Constitucional',
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -31,7 +37,6 @@ module.exports = {
       {},
     );
   },
-
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('materia', null, {});
   },

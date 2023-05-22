@@ -68,8 +68,11 @@ router.get('/', (req, res, next) => {
     .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+          through: { attributes: ['notaPrimerParcial', 'notaSegundoParcial'] },
+        },
       ],
       limit: pageSize,
       offset,

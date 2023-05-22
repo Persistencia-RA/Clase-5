@@ -11,7 +11,7 @@ const materiaRouter = require('./routes/materias');
 const aulaRouter = require('./routes/aulas');
 const profesorRouter = require('./routes/profesor');
 const alumnosRouter = require('./routes/alumnos');
-const notasRouter = require('./routes/notas');
+/* const notasRouter = require('./routes/notas'); */
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.use('/materia', materiaRouter);
 app.use('/aula', aulaRouter);
 app.use('/profesor', profesorRouter);
 app.use('/alumno', alumnosRouter);
-app.use('/nota', notasRouter);
+/* app.use('/nota', notasRouter); */
 
 // catch 404 and forward to error handler
 

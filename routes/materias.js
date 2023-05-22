@@ -35,7 +35,7 @@ const models = require('../models');
  *                   id:
  *                     type: integer
  *                     description: ID de la materia
- *                   id_carrera:
+ *                   carreraId:
  *                     type: integer
  *                     description: ID de la carrera
  *                   nombre:
@@ -63,7 +63,11 @@ router.get('/', (req, res, next) => {
     .findAndCountAll({
       attributes: ['id', 'nombre'],
       include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+        {
+          as: 'carrera',
+          model: models.carrera,
+          attributes: ['nombre'],
+        },
       ],
       limit: pageSize,
       offset,
