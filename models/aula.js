@@ -1,13 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
   const aula = sequelize.define(
-    'aula',
+    'Aula',
     {
-      numero_lab: DataTypes.INTEGER,
+      nroAula: DataTypes.INTEGER,
     },
-    { tableName: 'aula' },
+    { tableName: 'Aula' },
   );
-  /*   aula.associate = function (models) {
-    aula.hasMany(models.materia);
-  }; */
+  aula.associate = function (models) {
+    aula.belongsTo(models.materia);
+  };
   return aula;
 };

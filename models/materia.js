@@ -1,15 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
   const materia = sequelize.define(
-    'materia',
+    'Materia',
     {
       nombre: DataTypes.STRING,
     },
-    { tableName: 'materia' },
+    { tableName: 'Materia' },
   );
   materia.associate = function (models) {
     materia.belongsTo(models.carrera);
     materia.belongsToMany(models.alumno, {
       through: models.nota,
+      foreignKey: 'materiaId',
+    });
+    materia.belongsToMany(models.carrera, {
+      through: models.materiaCarrera,
       foreignKey: 'materiaId',
     });
   };

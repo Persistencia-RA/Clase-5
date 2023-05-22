@@ -1,22 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
   const profesor = sequelize.define(
-    'profesor',
+    'Profesor',
     {
-      id_materia: DataTypes.INTEGER,
-      id_aula: DataTypes.INTEGER,
       nombre: DataTypes.STRING,
       apellido: DataTypes.STRING,
     },
-    { tableName: 'profesor' },
+    { tableName: 'Profesor' },
   );
   profesor.associate = function (models) {
     profesor.belongsTo(models.materia, {
-      foreignKey: 'id_materia',
-      as: 'materia',
-    });
-    profesor.belongsTo(models.aula, {
-      foreignKey: 'id_aula',
-      as: 'aula',
+      foreignKey: 'materiaId',
+      as: 'Materia',
     });
   };
 
