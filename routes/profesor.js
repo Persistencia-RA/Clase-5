@@ -64,16 +64,15 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.profesor
-    .findAndCountAll({
-      attributes: ['id', 'nombre', 'apellido'],
-      include: [
-        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
-      ],
-      limit: pageSize,
-      offset,
-    })
+  models.Profesor.findAndCountAll({
+    attributes: ['id', 'nombre', 'apellido'],
+    include: [
+      { as: 'aula', model: models.Aula, attributes: ['id', 'nroAula'] },
+      { as: 'materia', model: models.Materia, attributes: ['id', 'nombre'] },
+    ],
+    limit: pageSize,
+    offset,
+  })
     .then((result) => {
       const profesores = result.rows;
       const totalCount = result.count;

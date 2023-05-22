@@ -1,15 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
   const nota = sequelize.define(
-    'Nota',
+    'nota',
     {
       notaPrimerParcial: DataTypes.INTEGER,
       notaSegundoParcial: DataTypes.INTEGER,
     },
-    { tableName: 'Nota' },
+    { tableName: 'nota' },
   );
   nota.associate = function (models) {
-    nota.belongsTo(models.materia);
-    nota.belongsTo(models.alumno);
+    nota.belongsTo(models.Materia);
+    nota.belongsTo(models.Alumno);
   };
   return nota;
 };

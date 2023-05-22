@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
   const profesor = sequelize.define(
-    'Profesor',
+    'profesor',
     {
       nombre: DataTypes.STRING,
       apellido: DataTypes.STRING,
     },
-    { tableName: 'Profesor' },
+    { tableName: 'profesor' },
   );
   profesor.associate = function (models) {
-    profesor.belongsTo(models.materia, {
+    profesor.belongsTo(models.Materia, {
       foreignKey: 'materiaId',
       as: 'Materia',
     });

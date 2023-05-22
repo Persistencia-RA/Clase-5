@@ -1,14 +1,14 @@
 module.exports = (sequelize, DataTypes) => {
   const carrera = sequelize.define(
-    'Carrera',
+    'carrera',
     {
       nombre: DataTypes.STRING,
     },
-    { tableName: 'Carrera' },
+    { tableName: 'carrera' },
   );
   carrera.associate = function (models) {
     carrera.belongsToMany(models.materia, {
-      through: models.materiaCarrera,
+      through: models.MateriaCarrera,
       foreignKey: 'carreraId',
     });
   };

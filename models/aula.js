@@ -1,13 +1,13 @@
 module.exports = (sequelize, DataTypes) => {
   const aula = sequelize.define(
-    'Aula',
+    'aula',
     {
       nroAula: DataTypes.INTEGER,
     },
-    { tableName: 'Aula' },
+    { tableName: 'aula' },
   );
   aula.associate = function (models) {
-    aula.belongsTo(models.materia);
+    aula.belongsTo(models.Materia);
   };
   return aula;
 };
