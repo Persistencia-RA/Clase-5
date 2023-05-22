@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      numero_lab: {
+      nroAula: {
         type: Sequelize.INTEGER,
       },
       createdAt: {
