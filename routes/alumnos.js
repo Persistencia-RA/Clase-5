@@ -28,34 +28,57 @@ const models = require('../models');
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: ID del alumno
- *                   id_materia:
- *                     type: integer
- *                     description: ID materia
- *                   id_aula:
- *                     type: integer
- *                     description: ID aula
- *                   nombre:
- *                     type: string
- *                     description: Nombre del alumno
- *                   apellido:
- *                     type: string
- *                     description: Apellido del alumno
+ *               type: object
+ *               properties:
+ *                 alumnos:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID del alumno
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre del alumno
+ *                       apellido:
+ *                         type: string
+ *                         description: Apellido del alumno
+ *                       carrera:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre de la carrera
+ *                       materia:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               description: ID de la materia
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la materia
+ *                             nota:
+ *                               type: object
+ *                               properties:
+ *                                 notaPrimerParcial:
+ *                                   type: integer
+ *                                   description: Nota del primer parcial
+ *                                 notaSegundoParcial:
+ *                                   type: integer
+ *                                   description: Nota del segundo parcial
  *               currentPage:
- *                  type: integer
- *                  description: Página actual
+ *                 type: integer
+ *                 description: Página actual
  *               totalPages:
  *                 type: integer
  *                 description: Número total de páginas
  *               totalCount:
  *                 type: integer
- *                 description: Total de aulas
+ *                 description: Total de alumnos
  *       500:
  *         description: Error interno del servidor
  */
@@ -119,18 +142,53 @@ router.get('/', (req, res, next) => {
  *                 type: string
  *                 description: Apellido del alumno
  *     responses:
- *       201:
+ *       200:
  *         description: OK
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: ID del alumno creado
- *       400:
- *         description: Bad Request
+ *                 alumnos:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID del alumno
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre del alumno
+ *                       apellido:
+ *                         type: string
+ *                         description: Apellido del alumno
+ *                       carrera:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre de la carrera
+ *                       materia:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               description: ID de la materia
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la materia
+ *                             nota:
+ *                               type: object
+ *                               properties:
+ *                                 notaPrimerParcial:
+ *                                   type: integer
+ *                                   description: Nota del primer parcial
+ *                                 notaSegundoParcial:
+ *                                   type: integer
+ *                                   description: Nota del segundo parcial
  *       500:
  *         description: Error interno del servidor
  */
@@ -196,23 +254,55 @@ const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: ID del alumno
- *                 id_materia:
- *                   type: integer
- *                   description: ID de la materia del alumno
- *                 id_aula:
- *                   type: integer
- *                   description: ID del aula del alumno
- *                 nombre:
- *                   type: string
- *                   description: Nombre del alumno
- *                 apellido:
- *                   type: string
- *                   description: Apellido del alumno
- *       404:
- *         description: Alumno no encontrado
+ *                 alumnos:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID del alumno
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre del alumno
+ *                       apellido:
+ *                         type: string
+ *                         description: Apellido del alumno
+ *                       carrera:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre de la carrera
+ *                       materia:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               description: ID de la materia
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la materia
+ *                             nota:
+ *                               type: object
+ *                               properties:
+ *                                 notaPrimerParcial:
+ *                                   type: integer
+ *                                   description: Nota del primer parcial
+ *                                 notaSegundoParcial:
+ *                                   type: integer
+ *                                   description: Nota del segundo parcial
+ *               currentPage:
+ *                 type: integer
+ *                 description: Página actual
+ *               totalPages:
+ *                 type: integer
+ *                 description: Número total de páginas
+ *               totalCount:
+ *                 type: integer
+ *                 description: Total de alumnos
  *       500:
  *         description: Error interno del servidor
  */

@@ -38,9 +38,20 @@ const models = require('../models');
  *                       id:
  *                         type: integer
  *                         description: ID del aula
- *                       numero_lab:
- *                         type: string
+ *                       nroLab:
+ *                         type: integer
  *                         description: Número de laboratorio del aula
+ *                       materia:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               description: ID de la materia
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la materia
  *                 currentPage:
  *                   type: integer
  *                   description: Página actual
@@ -101,8 +112,8 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               numero_lab:
- *                 type: string
+ *               nroAula:
+ *                 type: integer
  *                 description: Número de laboratorio del aula
  *     responses:
  *       201:
@@ -176,9 +187,20 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *                 id:
  *                   type: integer
  *                   description: ID del aula
- *                 numero_lab:
- *                   type: string
+ *                 nroLab:
+ *                   type: integer
  *                   description: Número de laboratorio del aula
+ *                 materia:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
  *       404:
  *         description: Aula no encontrada
  *       500:
@@ -212,8 +234,8 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               numero_lab:
- *                 type: string
+ *               nroAula:
+ *                 type: integer
  *                 description: Número de laboratorio del aula
  *     responses:
  *       200:
