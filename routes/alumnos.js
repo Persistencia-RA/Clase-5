@@ -112,12 +112,6 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: ID de la materia del alumno
- *               id_aula:
- *                 type: integer
- *                 description: ID del aula del alumno
  *               nombre:
  *                 type: string
  *                 description: Nombre del alumno
@@ -146,7 +140,6 @@ router.post('/', (req, res) => {
     .create({
       nombre: r.nombre,
       apellido: r.apellido,
-      carreraId: r.carreraId,
     })
     .then((alumno) => res.status(201).send({ id: alumno.id }))
     .catch((error) => {
@@ -251,12 +244,6 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: Nuevo ID de la materia del alumno
- *               id_aula:
- *                 type: integer
- *                 description: Nuevo ID del aula del alumno
  *               nombre:
  *                 type: string
  *                 description: Nuevo nombre del alumno
@@ -281,7 +268,6 @@ router.put('/:id', (req, res) => {
         {
           nombre: r.nombre,
           apellido: r.apellido,
-          carreraId: r.carreraId,
         },
         { fields: ['nombre', 'apellido', 'carreraId'] },
       )
