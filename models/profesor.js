@@ -8,10 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'profesor' },
   );
   profesor.associate = function (models) {
-    profesor.belongsTo(models.Materia, {
-      foreignKey: 'materiaId',
-      as: 'Materia',
-    });
+    profesor.hasMany(models.materia);
   };
 
   return profesor;

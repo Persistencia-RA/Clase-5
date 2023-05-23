@@ -64,9 +64,17 @@ router.get('/', (req, res, next) => {
       attributes: ['id', 'nombre'],
       include: [
         {
-          as: 'carrera',
+          model: models.aula,
+          attributes: ['nroAula'],
+        },
+        {
+          model: models.profesor,
+          attributes: ['nombre', 'apellido'],
+        },
+        {
           model: models.carrera,
           attributes: ['nombre'],
+          through: { attributes: ['carreraId'] },
         },
       ],
       limit: pageSize,
@@ -134,7 +142,11 @@ router.get('/', (req, res, next) => {
  */
 router.post('/', (req, res) => {
   models.materia
-    .create({ id_carrera: req.body.id_carrera, nombre: req.body.nombre })
+    .create({
+      nombre: req.body.nombre,
+      aulaId: req.body.aulaId,
+      profesorId: req.body.profesorId,
+    })
     .then((materia) => res.status(201).send({ id: materia.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
@@ -151,7 +163,7 @@ router.post('/', (req, res) => {
 const findMateria = (id, { onSuccess, onNotFound, onError }) => {
   models.materia
     .findOne({
-      attributes: ['id', 'id_carrera', 'nombre'],
+      attributes: ['id', 'nombre'],
       include: [
         { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
       ],

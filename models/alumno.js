@@ -8,11 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'alumno' },
   );
   alumno.associate = function (models) {
-    alumno.belongsToMany(models.Materia, {
-      through: models.Nota,
+    alumno.belongsToMany(models.materia, {
+      through: models.nota,
       foreignKey: 'alumnoId',
     });
-    alumno.belongsTo(models.Carrera);
+    alumno.belongsTo(models.carrera);
   };
   return alumno;
 };

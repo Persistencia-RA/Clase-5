@@ -58,11 +58,18 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.Aula.findAndCountAll({
-    attributes: ['id', 'nroAula'],
-    limit: pageSize,
-    offset,
-  })
+  models.aula
+    .findAndCountAll({
+      attributes: ['id', 'nroAula'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+        },
+      ],
+      limit: pageSize,
+      offset,
+    })
     .then((result) => {
       const aulas = result.rows;
       const totalCount = result.count;
@@ -114,7 +121,8 @@ router.get('/', (req, res, next) => {
  *         description: Error interno del servidor
  */
 router.post('/', (req, res) => {
-  models.Aula.create({ nroAula: req.body.nroAula })
+  models.aula
+    .create({ nroAula: req.body.nroAula })
     .then((aula) => res.status(201).send({ id: aula.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
@@ -129,10 +137,11 @@ router.post('/', (req, res) => {
 });
 
 const findAula = (id, { onSuccess, onNotFound, onError }) => {
-  models.Aula.findOne({
-    attributes: ['id', 'nroAula'],
-    where: { id },
-  })
+  models.aula
+    .findOne({
+      attributes: ['id', 'nroAula'],
+      where: { id },
+    })
     .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
     .catch(() => onError());
 };

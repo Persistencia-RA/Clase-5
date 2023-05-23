@@ -6,17 +6,22 @@ module.exports = {
       'aula',
       [
         {
-          numero_lab: 101,
+          nroAula: 101,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          numero_lab: 102,
+          nroAula: 102,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          numero_lab: 201,
+          nroAula: 201,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          nroAula: 202,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

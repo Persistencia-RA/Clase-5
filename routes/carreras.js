@@ -55,11 +55,19 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.Carrera.findAndCountAll({
-    attributes: ['id', 'nombre'],
-    limit: pageSize,
-    offset,
-  })
+  models.carrera
+    .findAndCountAll({
+      attributes: ['id', 'nombre'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['nombre'],
+          through: { attributes: ['materiaId'] },
+        },
+      ],
+      limit: pageSize,
+      offset,
+    })
     .then((result) => {
       const carreras = result.rows;
       const totalCount = result.count;
@@ -118,8 +126,9 @@ router.get('/', (req, res, next) => {
  *         description: Error interno del servidor
  */
 router.post('/', (req, res) => {
-  models.Carrera.create({ nombre: req.body.nombre })
-    .then((Carrera) => res.status(201).send({ id: Carrera.id }))
+  models.carrera
+    .create({ nombre: req.body.nombre })
+    .then((carrera) => res.status(201).send({ id: carrera.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -258,8 +267,9 @@ router.put('/:id', (req, res) => {
  *         description: Error interno del servidor
  */
 router.delete('/:id', (req, res) => {
-  const onSuccess = (Carrera) =>
-    Carrera.destroy()
+  const onSuccess = (carrera) =>
+    carrera
+      .destroy()
       .then(() => res.sendStatus(200))
       .catch(() => res.sendStatus(500));
   findCarrera(req.params.id, {
@@ -270,11 +280,12 @@ router.delete('/:id', (req, res) => {
 });
 
 const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
-  models.Carrera.findOne({
-    attributes: ['id', 'nombre'],
-    where: { id },
-  })
-    .then((Carrera) => (Carrera ? onSuccess(Carrera) : onNotFound()))
+  models.carrera
+    .findOne({
+      attributes: ['id', 'nombre'],
+      where: { id },
+    })
+    .then((carrera) => (carrera ? onSuccess(carrera) : onNotFound()))
     .catch(() => onError());
 };
 

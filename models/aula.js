@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'aula' },
   );
   aula.associate = function (models) {
-    aula.belongsTo(models.Materia);
+    aula.hasMany(models.materia);
   };
   return aula;
 };

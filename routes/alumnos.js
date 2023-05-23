@@ -64,18 +64,23 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.Alumno.findAndCountAll({
-    attributes: ['id', 'nombre', 'apellido'],
-    include: [
-      {
-        model: models.Materia,
-        attributes: ['id', 'nombre'],
-        through: { attributes: ['notaPrimerParcial', 'notaSegundoParcial'] },
-      },
-    ],
-    limit: pageSize,
-    offset,
-  })
+  models.alumno
+    .findAndCountAll({
+      attributes: ['id', 'nombre', 'apellido'],
+      include: [
+        {
+          model: models.carrera,
+          attributes: ['nombre'],
+        },
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+          through: { attributes: ['notaPrimerParcial', 'notaSegundoParcial'] },
+        },
+      ],
+      limit: pageSize,
+      offset,
+    })
     .then((result) => {
       const alumnos = result.rows;
       const totalCount = result.count;
@@ -137,12 +142,12 @@ router.get('/', (req, res, next) => {
  */
 router.post('/', (req, res) => {
   const r = req.body;
-  models.Alumno.create({
-    id_materia: r.id_materia,
-    id_aula: r.id_aula,
-    nombre: r.nombre,
-    apellido: r.apellido,
-  })
+  models.alumno
+    .create({
+      nombre: r.nombre,
+      apellido: r.apellido,
+      carreraId: r.carreraId,
+    })
     .then((alumno) => res.status(201).send({ id: alumno.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
@@ -157,14 +162,14 @@ router.post('/', (req, res) => {
 });
 
 const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
-  models.Alumno.findOne({
-    attributes: ['id', 'nombre', 'apellido'],
-    include: [
-      { as: 'aula', model: models.Aula, attributes: ['id', 'nroAula'] },
-      { as: 'materia', model: models.Materia, attributes: ['id', 'nombre'] },
-    ],
-    where: { id },
-  })
+  models.alumno
+    .findOne({
+      attributes: ['id', 'nombre', 'apellido'],
+      include: [
+        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+      ],
+      where: { id },
+    })
     .then((alumno) => (alumno ? onSuccess(alumno) : onNotFound()))
     .catch(() => onError());
 };
@@ -266,11 +271,11 @@ router.put('/:id', (req, res) => {
     alumno
       .update(
         {
-          materiaId: r.materiaId,
           nombre: r.nombre,
           apellido: r.apellido,
+          carreraId: r.carreraId,
         },
-        { fields: ['materiaId', 'nombre', 'apellido'] },
+        { fields: ['nombre', 'apellido', 'carreraId'] },
       )
       .then(() => res.sendStatus(200))
       .catch((error) => {

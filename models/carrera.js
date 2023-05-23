@@ -8,9 +8,10 @@ module.exports = (sequelize, DataTypes) => {
   );
   carrera.associate = function (models) {
     carrera.belongsToMany(models.materia, {
-      through: models.MateriaCarrera,
+      through: models.materiacarrera,
       foreignKey: 'carreraId',
     });
+    carrera.hasMany(models.alumno);
   };
   return carrera;
 };

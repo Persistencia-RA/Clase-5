@@ -1,12 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
-  const MateriaCarrera = sequelize.define(
-    'MateriaCarrera',
-    {},
-    { tableName: 'MateriaCarrera' },
+  const materiacarrera = sequelize.define(
+    'materiacarrera',
+    {
+      materiaId: DataTypes.INTEGER,
+      carreraId: DataTypes.INTEGER,
+    },
+    { tableName: 'materiacarrera' },
   );
-  MateriaCarrera.associate = function (models) {
-    MateriaCarrera.belongsTo(models.Carrera);
-    MateriaCarrera.belongsTo(models.Materia);
+  materiacarrera.associate = function (models) {
+    materiacarrera.belongsTo(models.materia);
+    materiacarrera.belongsTo(models.carrera);
   };
-  return MateriaCarrera;
+  return materiacarrera;
 };

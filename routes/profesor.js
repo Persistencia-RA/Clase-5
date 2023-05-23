@@ -64,15 +64,15 @@ router.get('/', (req, res, next) => {
   const pageSize = parseInt(req.query.pageSize) || 10;
 
   const offset = (page - 1) * pageSize;
-  models.Profesor.findAndCountAll({
-    attributes: ['id', 'nombre', 'apellido'],
-    include: [
-      { as: 'aula', model: models.Aula, attributes: ['id', 'nroAula'] },
-      { as: 'materia', model: models.Materia, attributes: ['id', 'nombre'] },
-    ],
-    limit: pageSize,
-    offset,
-  })
+  models.profesor
+    .findAndCountAll({
+      attributes: ['id', 'nombre', 'apellido'],
+      include: [
+        { as: 'materia', model: models.materia, attributes: ['nombre'] },
+      ],
+      limit: pageSize,
+      offset,
+    })
     .then((result) => {
       const profesores = result.rows;
       const totalCount = result.count;
@@ -143,8 +143,6 @@ router.post('/', (req, res) => {
   const r = req.body;
   models.profesor
     .create({
-      id_materia: r.id_materia,
-      id_aula: r.id_aula,
       nombre: r.nombre,
       apellido: r.apellido,
     })
@@ -166,7 +164,6 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
     .findOne({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
         { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
       ],
       where: { id },
@@ -280,12 +277,10 @@ router.put('/:id', (req, res) => {
     profesor
       .update(
         {
-          id_materia: r.id_materia,
-          id_aula: r.id_aula,
           nombre: r.nombre,
           apellido: r.apellido,
         },
-        { fields: ['id_materia', 'id_aula', 'nombre', 'apellido'] },
+        { fields: ['nombre', 'apellido'] },
       )
       .then(() => res.sendStatus(200))
       .catch((error) => {

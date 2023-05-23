@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'nota' },
   );
   nota.associate = function (models) {
-    nota.belongsTo(models.Materia);
-    nota.belongsTo(models.Alumno);
+    nota.belongsTo(models.materia);
+    nota.belongsTo(models.alumno);
   };
   return nota;
 };
