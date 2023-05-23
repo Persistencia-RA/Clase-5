@@ -35,18 +35,23 @@ const models = require('../models');
  *                  id:
  *                    type: integer
  *                    description: ID del profesor
- *                  id_materia:
- *                    type: integer
- *                    description: ID de la materia
- *                  id_aula:
- *                    type: integer
- *                    description: ID del aula
- *                  nombre:
+*                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
  *                    type: string
  *                    description: Apellido del profesor
+ *                  materia:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          description: ID de la materia
+ *                        nombre:
+ *                          type: string
+ *                          description: Nombre de la materia
  *              currentPage:
  *                   type: integer
  *                   description: Página actual
@@ -103,12 +108,6 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: ID de la materia
- *               id_aula:
- *                 type: integer
- *                 description: ID del aula
  *               nombre:
  *                 type: string
  *                 description: Nombre del profesor
@@ -193,21 +192,26 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
  *             schema:
  *               type: object
  *               properties:
- *                  id:
+*                  id:
  *                    type: integer
  *                    description: ID del profesor
- *                  id_materia:
- *                    type: integer
- *                    description: ID de la materia
- *                  id_aula:
- *                    type: integer
- *                    description: ID del aula
- *                  nombre:
+*                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
  *                    type: string
  *                    description: Apellido del profesor
+ *                  materia:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          description: ID de la materia
+ *                        nombre:
+ *                          type: string
+ *                          description: Nombre de la materia
  *       404:
  *         description: Profesor no encontrado
  *       500:
@@ -241,12 +245,6 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: ID de la materia
- *               id_aula:
- *                 type: integer
- *                 description: ID del aula
  *               nombre:
  *                 type: string
  *                 description: Nombre del profesor
