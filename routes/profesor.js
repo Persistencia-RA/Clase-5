@@ -35,7 +35,7 @@ const models = require('../models');
  *                  id:
  *                    type: integer
  *                    description: ID del profesor
-*                  nombre:
+ *                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
@@ -192,10 +192,10 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
  *             schema:
  *               type: object
  *               properties:
-*                  id:
+ *                  id:
  *                    type: integer
  *                    description: ID del profesor
-*                  nombre:
+ *                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
