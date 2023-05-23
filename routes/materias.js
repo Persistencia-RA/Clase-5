@@ -28,29 +28,57 @@ const models = require('../models');
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: ID de la materia
- *                   carreraId:
- *                     type: integer
- *                     description: ID de la carrera
- *                   nombre:
- *                     type: string
- *                     description: Nombre de la materia
- *               currentPage:
+ *               type: object
+ *               properties:
+ *                 materias:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       aula:
+ *                         type: object
+ *                         properties:
+ *                           nroAula:
+ *                             type: integer
+ *                             description: Número de laboratorio del aula
+ *                       profesor:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre del profesor
+ *                           apellido:
+ *                             type: string
+ *                             description: Apellido del profesor
+ *                       carreras:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la carrera
+ *                             materiacarrera:
+ *                               type: object
+ *                               properties:
+ *                                 carreraId:
+ *                                   type: integer
+ *                                   description: ID de la carrera
+ *                 currentPage:
  *                   type: integer
  *                   description: Página actual
- *               totalPages:
+ *                 totalPages:
  *                   type: integer
  *                   description: Número total de páginas
- *               totalCount:
+ *                 totalCount:
  *                   type: integer
- *                   description: Total de aulas
- *
+ *                   description: Total de materias
  *       500:
  *         description: Error interno del servidor
  */
@@ -110,9 +138,6 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_carrera:
- *                 type: integer
- *                 description: ID de la carrera
  *               nombre:
  *                 type: string
  *                 description: Nombre de la materia
@@ -144,8 +169,6 @@ router.post('/', (req, res) => {
   models.materia
     .create({
       nombre: req.body.nombre,
-      aulaId: req.body.aulaId,
-      profesorId: req.body.profesorId,
     })
     .then((materia) => res.status(201).send({ id: materia.id }))
     .catch((error) => {
@@ -206,15 +229,41 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: ID de la materia
- *                 id_carrera:
- *                   type: integer
- *                   description: ID de la carrera
- *                 nombre:
- *                   type: string
- *                   description: Nombre de la materia
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       aula:
+ *                         type: object
+ *                         properties:
+ *                           nroAula:
+ *                             type: integer
+ *                             description: Número de laboratorio del aula
+ *                       profesor:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre del profesor
+ *                           apellido:
+ *                             type: string
+ *                             description: Apellido del profesor
+ *                       carreras:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la carrera
+ *                             materiacarrera:
+ *                               type: object
+ *                               properties:
+ *                                 carreraId:
+ *                                   type: integer
+ *                                   description: ID de la carrera
  *       404:
  *         description: Materia no encontrada
  *       500:
@@ -248,9 +297,6 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_carrera:
- *                 type: integer
- *                 description: ID de la carrera
  *               nombre:
  *                 type: string
  *                 description: Nombre de la materia
