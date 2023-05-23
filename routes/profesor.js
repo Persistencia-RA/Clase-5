@@ -164,7 +164,7 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
     .findOne({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+        { as: 'materia', model: models.materia, attributes: ['nombre'] },
       ],
       where: { id },
     })

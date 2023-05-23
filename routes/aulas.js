@@ -140,6 +140,12 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
   models.aula
     .findOne({
       attributes: ['id', 'nroAula'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+        },
+      ],
       where: { id },
     })
     .then((aula) => (aula ? onSuccess(aula) : onNotFound()))

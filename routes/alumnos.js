@@ -166,7 +166,15 @@ const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
     .findOne({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+        {
+          model: models.carrera,
+          attributes: ['nombre'],
+        },
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+          through: { attributes: ['notaPrimerParcial', 'notaSegundoParcial'] },
+        },
       ],
       where: { id },
     })

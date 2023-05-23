@@ -283,6 +283,13 @@ const findCarrera = (id, { onSuccess, onNotFound, onError }) => {
   models.carrera
     .findOne({
       attributes: ['id', 'nombre'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['nombre'],
+          through: { attributes: ['materiaId'] },
+        },
+      ],
       where: { id },
     })
     .then((carrera) => (carrera ? onSuccess(carrera) : onNotFound()))

@@ -165,7 +165,19 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
     .findOne({
       attributes: ['id', 'nombre'],
       include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+        {
+          model: models.aula,
+          attributes: ['nroAula'],
+        },
+        {
+          model: models.profesor,
+          attributes: ['nombre', 'apellido'],
+        },
+        {
+          model: models.carrera,
+          attributes: ['nombre'],
+          through: { attributes: ['carreraId'] },
+        },
       ],
       where: { id },
     })
