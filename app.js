@@ -12,7 +12,7 @@ const aulaRouter = require('./routes/aulas');
 const profesorRouter = require('./routes/profesor');
 const alumnosRouter = require('./routes/alumnos');
 /* const notasRouter = require('./routes/notas'); */
-
+const materiaCarreraRouter = require('./routes/materiaCarreras');
 const app = express();
 
 // view engine setup
@@ -35,7 +35,7 @@ app.use('/aula', aulaRouter);
 app.use('/profesor', profesorRouter);
 app.use('/alumno', alumnosRouter);
 /* app.use('/nota', notasRouter); */
-
+app.use('/materiaCarrera', materiaCarreraRouter);
 // catch 404 and forward to error handler
 
 app.use(function (req, res, next) {
