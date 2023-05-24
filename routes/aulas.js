@@ -147,22 +147,6 @@ router.post('/', (req, res) => {
     });
 });
 
-const findAula = (id, { onSuccess, onNotFound, onError }) => {
-  models.aula
-    .findOne({
-      attributes: ['id', 'nroAula'],
-      include: [
-        {
-          model: models.materia,
-          attributes: ['id', 'nombre'],
-        },
-      ],
-      where: { id },
-    })
-    .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
-    .catch(() => onError());
-};
-
 /**
  * @swagger
  * /aula/{id}:
@@ -213,6 +197,22 @@ router.get('/:id', (req, res) => {
     onError: () => res.sendStatus(500),
   });
 });
+
+const findAula = (id, { onSuccess, onNotFound, onError }) => {
+  models.aula
+    .findOne({
+      attributes: ['id', 'nroAula'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+        },
+      ],
+      where: { id },
+    })
+    .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
+    .catch(() => onError());
+};
 
 /**
  * @swagger
