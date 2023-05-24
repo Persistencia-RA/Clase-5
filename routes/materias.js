@@ -199,7 +199,7 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
         {
           model: models.carrera,
           attributes: ['nombre'],
-          through: { attributes: ['carreraId'] },
+          through: { attributes: ['id', 'carreraId'] },
         },
       ],
       where: { id },
