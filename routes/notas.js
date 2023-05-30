@@ -51,19 +51,35 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { alumnoId, materiaId, notaPrimerParcial, notaSegundoParcial } =
     req.body;
 
-  models.nota
-    .create({ alumnoId, materiaId, notaPrimerParcial, notaSegundoParcial })
-    .then((nota) => {
-      res.status(201).json(nota);
-    })
-    .catch((err) => {
-      console.error('Error al crear la nota:', err);
-      res.status(500).json({ error: 'Error al crear la nota' });
+  try {
+    const alumno = await models.alumno.findByPk(alumnoId);
+    const materia = await models.materia.findByPk(materiaId);
+
+    if (!alumno) {
+      return res.status(400).json({ error: 'El alumno no existe' });
+    }
+
+    if (!materia) {
+      return res.status(400).json({ error: 'La materia no existe' });
+    }
+
+    // Crear la nota si el alumno y materia existen
+    const nota = await models.nota.create({
+      alumnoId,
+      materiaId,
+      notaPrimerParcial,
+      notaSegundoParcial,
     });
+
+    res.status(201).json(nota);
+  } catch (err) {
+    console.error('Error al crear la nota:', err);
+    res.status(500).json({ error: 'Error al crear la nota' });
+  }
 });
 
 /**

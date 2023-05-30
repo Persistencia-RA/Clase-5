@@ -45,18 +45,32 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { materiaId, carreraId } = req.body;
 
-  models.materiacarrera
-    .create({ materiaId, carreraId })
-    .then((materiacarrera) => {
-      res.status(201).json(materiacarrera);
-    })
-    .catch((err) => {
-      console.error('Error al crear la materiacarrera:', err);
-      res.status(500).json({ error: 'Error al crear la materiacarrera' });
+  try {
+    // Verificar si la materia existe
+    const materia = await models.materia.findByPk(materiaId);
+    if (!materia) {
+      return res.status(400).json({ error: 'La materia no existe' });
+    }
+
+    // Verificar si la carrera existe
+    const carrera = await models.carrera.findByPk(carreraId);
+    if (!carrera) {
+      return res.status(400).json({ error: 'La carrera no existe' });
+    }
+
+    // Crear la materiacarrera si la materia y carrera existen
+    const materiacarrera = await models.materiacarrera.create({
+      materiaId,
+      carreraId,
     });
+    res.status(201).json(materiacarrera);
+  } catch (err) {
+    console.error('Error al crear la materiacarrera:', err);
+    res.status(500).json({ error: 'Error al crear la materiacarrera' });
+  }
 });
 
 /**
