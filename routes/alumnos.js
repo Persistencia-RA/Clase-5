@@ -199,7 +199,14 @@ router.post('/', (req, res) => {
       nombre: r.nombre,
       apellido: r.apellido,
     })
-    .then((alumno) => res.status(201).send({ id: alumno.id }))
+    .then((alumno) =>
+      res.status(201).send({
+        alumno: {
+          nombre: alumno.nombre,
+          apellido: alumno.apellido,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
