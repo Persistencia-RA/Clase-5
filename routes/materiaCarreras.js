@@ -4,10 +4,10 @@ const models = require('../models');
 
 /**
  * @swagger
- * /materiaCarrera:
+ * /MateriaCarrera:
  *   post:
- *     summary: Crea una nueva materiacarrera
- *     tags: [materiaCarrera]
+ *     summary: Crea una nueva Materiacarrera
+ *     tags: [MateriaCarrera]
  *     requestBody:
  *       required: true
  *       content:
@@ -51,22 +51,22 @@ router.post('/', async (req, res) => {
   try {
     // Verificar si la materia existe
     const materia = await models.materia.findByPk(materiaId);
-    if (!materia) {
-      return res.status(400).json({ error: 'La materia no existe' });
-    }
-
     // Verificar si la carrera existe
     const carrera = await models.carrera.findByPk(carreraId);
-    if (!carrera) {
-      return res.status(400).json({ error: 'La carrera no existe' });
-    }
 
-    // Crear la materiacarrera si la materia y carrera existen
-    const materiacarrera = await models.materiacarrera.create({
-      materiaId,
-      carreraId,
-    });
-    res.status(201).json(materiacarrera);
+    if (!materia) {
+      return res.status(400).json({ error: 'La materia no existe' });
+    } else if (!carrera) {
+      return res.status(400).json({ error: 'La carrera no existe' });
+    } else {
+      // Crear la materiacarrera si la materia y carrera existen
+      const materiacarrera = await models.materiacarrera.create({
+        materiaId,
+        carreraId,
+      });
+
+      res.status(201).json(materiacarrera);
+    }
   } catch (err) {
     console.error('Error al crear la materiacarrera:', err);
     res.status(500).json({ error: 'Error al crear la materiacarrera' });
@@ -75,11 +75,11 @@ router.post('/', async (req, res) => {
 
 /**
  * @swagger
- * /materiaCarrera/{id}:
+ * /MateriaCarrera/{id}:
  *   get:
- *     summary: Obtiene una materiaCarrera por su ID
+ *     summary: Obtiene una MateriaCarrera por su ID
  *     tags:
- *       - materiaCarrera
+ *       - MateriaCarrera
  *     parameters:
  *       - in: path
  *         name: id
@@ -127,11 +127,11 @@ router.get('/:id', (req, res) => {
 
 /**
  * @swagger
- * /materiaCarrera/{id}:
+ * /MateriaCarrera/{id}:
  *   put:
- *     summary: Actualiza una materiaCarrera por su ID
+ *     summary: Actualiza una MateriaCarrera por su ID
  *     tags:
- *       - materiaCarrera
+ *       - MateriaCarrera
  *     parameters:
  *       - name: id
  *         in: path
@@ -192,10 +192,10 @@ router.put('/:id', (req, res) => {
 
 /**
  * @swagger
- * /materiaCarrera/{id}:
+ * /MateriaCarrera/{id}:
  *   delete:
- *     summary: Elimina una materiaCarrera por su ID
- *     tags: [materiaCarrera]
+ *     summary: Elimina una MateriaCarrera por su ID
+ *     tags: [MateriaCarrera]
  *     parameters:
  *       - in: path
  *         name: id
