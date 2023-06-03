@@ -35,18 +35,23 @@ const models = require('../models');
  *                  id:
  *                    type: integer
  *                    description: ID del profesor
- *                  id_materia:
- *                    type: integer
- *                    description: ID de la materia
- *                  id_aula:
- *                    type: integer
- *                    description: ID del aula
  *                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
  *                    type: string
  *                    description: Apellido del profesor
+ *                  materia:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          description: ID de la materia
+ *                        nombre:
+ *                          type: string
+ *                          description: Nombre de la materia
  *              currentPage:
  *                   type: integer
  *                   description: Página actual
@@ -68,8 +73,7 @@ router.get('/', (req, res, next) => {
     .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+        { as: 'materia', model: models.materia, attributes: ['nombre'] },
       ],
       limit: pageSize,
       offset,
@@ -104,12 +108,6 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: ID de la materia
- *               id_aula:
- *                 type: integer
- *                 description: ID del aula
  *               nombre:
  *                 type: string
  *                 description: Nombre del profesor
@@ -144,8 +142,6 @@ router.post('/', (req, res) => {
   const r = req.body;
   models.profesor
     .create({
-      id_materia: r.id_materia,
-      id_aula: r.id_aula,
       nombre: r.nombre,
       apellido: r.apellido,
     })
@@ -167,8 +163,7 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
     .findOne({
       attributes: ['id', 'nombre', 'apellido'],
       include: [
-        { as: 'aula', model: models.aula, attributes: ['id', 'numero_lab'] },
-        { as: 'materia', model: models.materia, attributes: ['id', 'nombre'] },
+        { as: 'materia', model: models.materia, attributes: ['nombre'] },
       ],
       where: { id },
     })
@@ -200,18 +195,23 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
  *                  id:
  *                    type: integer
  *                    description: ID del profesor
- *                  id_materia:
- *                    type: integer
- *                    description: ID de la materia
- *                  id_aula:
- *                    type: integer
- *                    description: ID del aula
  *                  nombre:
  *                    type: string
  *                    description: Nombre del profesor
  *                  apellido:
  *                    type: string
  *                    description: Apellido del profesor
+ *                  materia:
+ *                    type: array
+ *                    items:
+ *                      type: object
+ *                      properties:
+ *                        id:
+ *                          type: integer
+ *                          description: ID de la materia
+ *                        nombre:
+ *                          type: string
+ *                          description: Nombre de la materia
  *       404:
  *         description: Profesor no encontrado
  *       500:
@@ -245,12 +245,6 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_materia:
- *                 type: integer
- *                 description: ID de la materia
- *               id_aula:
- *                 type: integer
- *                 description: ID del aula
  *               nombre:
  *                 type: string
  *                 description: Nombre del profesor
@@ -281,12 +275,10 @@ router.put('/:id', (req, res) => {
     profesor
       .update(
         {
-          id_materia: r.id_materia,
-          id_aula: r.id_aula,
           nombre: r.nombre,
           apellido: r.apellido,
         },
-        { fields: ['id_materia', 'id_aula', 'nombre', 'apellido'] },
+        { fields: ['nombre', 'apellido'] },
       )
       .then(() => res.sendStatus(200))
       .catch((error) => {

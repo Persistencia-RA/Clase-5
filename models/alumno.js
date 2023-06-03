@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       through: models.nota,
       foreignKey: 'alumnoId',
     });
+    alumno.belongsTo(models.carrera);
   };
-
   return alumno;
 };

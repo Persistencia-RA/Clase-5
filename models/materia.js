@@ -7,11 +7,16 @@ module.exports = (sequelize, DataTypes) => {
     { tableName: 'materia' },
   );
   materia.associate = function (models) {
-    materia.belongsTo(models.carrera);
     materia.belongsToMany(models.alumno, {
       through: models.nota,
       foreignKey: 'materiaId',
     });
+    materia.belongsToMany(models.carrera, {
+      through: models.materiacarrera,
+      foreignKey: 'materiaId',
+    });
+    materia.belongsTo(models.aula);
+    materia.belongsTo(models.profesor);
   };
   return materia;
 };

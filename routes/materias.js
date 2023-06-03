@@ -28,29 +28,57 @@ const models = require('../models');
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: ID de la materia
- *                   carreraId:
- *                     type: integer
- *                     description: ID de la carrera
- *                   nombre:
- *                     type: string
- *                     description: Nombre de la materia
- *               currentPage:
+ *               type: object
+ *               properties:
+ *                 materias:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       aula:
+ *                         type: object
+ *                         properties:
+ *                           nroAula:
+ *                             type: integer
+ *                             description: Número de laboratorio del aula
+ *                       profesor:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre del profesor
+ *                           apellido:
+ *                             type: string
+ *                             description: Apellido del profesor
+ *                       carreras:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la carrera
+ *                             materiacarrera:
+ *                               type: object
+ *                               properties:
+ *                                 carreraId:
+ *                                   type: integer
+ *                                   description: ID de la carrera
+ *                 currentPage:
  *                   type: integer
  *                   description: Página actual
- *               totalPages:
+ *                 totalPages:
  *                   type: integer
  *                   description: Número total de páginas
- *               totalCount:
+ *                 totalCount:
  *                   type: integer
- *                   description: Total de aulas
- *
+ *                   description: Total de materias
  *       500:
  *         description: Error interno del servidor
  */
@@ -64,9 +92,17 @@ router.get('/', (req, res, next) => {
       attributes: ['id', 'nombre'],
       include: [
         {
-          as: 'carrera',
+          model: models.aula,
+          attributes: ['nroAula'],
+        },
+        {
+          model: models.profesor,
+          attributes: ['nombre', 'apellido'],
+        },
+        {
           model: models.carrera,
           attributes: ['nombre'],
+          through: { attributes: ['carreraId'] },
         },
       ],
       limit: pageSize,
@@ -102,9 +138,6 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_carrera:
- *                 type: integer
- *                 description: ID de la carrera
  *               nombre:
  *                 type: string
  *                 description: Nombre de la materia
@@ -134,7 +167,9 @@ router.get('/', (req, res, next) => {
  */
 router.post('/', (req, res) => {
   models.materia
-    .create({ id_carrera: req.body.id_carrera, nombre: req.body.nombre })
+    .create({
+      nombre: req.body.nombre,
+    })
     .then((materia) => res.status(201).send({ id: materia.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
@@ -151,9 +186,21 @@ router.post('/', (req, res) => {
 const findMateria = (id, { onSuccess, onNotFound, onError }) => {
   models.materia
     .findOne({
-      attributes: ['id', 'id_carrera', 'nombre'],
+      attributes: ['id', 'nombre'],
       include: [
-        { as: 'carrera', model: models.carrera, attributes: ['id', 'nombre'] },
+        {
+          model: models.aula,
+          attributes: ['nroAula'],
+        },
+        {
+          model: models.profesor,
+          attributes: ['nombre', 'apellido'],
+        },
+        {
+          model: models.carrera,
+          attributes: ['nombre'],
+          through: { attributes: ['id', 'carreraId'] },
+        },
       ],
       where: { id },
     })
@@ -182,15 +229,41 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: integer
- *                   description: ID de la materia
- *                 id_carrera:
- *                   type: integer
- *                   description: ID de la carrera
- *                 nombre:
- *                   type: string
- *                   description: Nombre de la materia
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
+ *                       aula:
+ *                         type: object
+ *                         properties:
+ *                           nroAula:
+ *                             type: integer
+ *                             description: Número de laboratorio del aula
+ *                       profesor:
+ *                         type: object
+ *                         properties:
+ *                           nombre:
+ *                             type: string
+ *                             description: Nombre del profesor
+ *                           apellido:
+ *                             type: string
+ *                             description: Apellido del profesor
+ *                       carreras:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la carrera
+ *                             materiacarrera:
+ *                               type: object
+ *                               properties:
+ *                                 carreraId:
+ *                                   type: integer
+ *                                   description: ID de la carrera
  *       404:
  *         description: Materia no encontrada
  *       500:
@@ -224,9 +297,6 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               id_carrera:
- *                 type: integer
- *                 description: ID de la carrera
  *               nombre:
  *                 type: string
  *                 description: Nombre de la materia

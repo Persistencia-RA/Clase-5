@@ -38,9 +38,20 @@ const models = require('../models');
  *                       id:
  *                         type: integer
  *                         description: ID del aula
- *                       numero_lab:
- *                         type: string
+ *                       nroLab:
+ *                         type: integer
  *                         description: Número de laboratorio del aula
+ *                       materia:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               description: ID de la materia
+ *                             nombre:
+ *                               type: string
+ *                               description: Nombre de la materia
  *                 currentPage:
  *                   type: integer
  *                   description: Página actual
@@ -60,7 +71,13 @@ router.get('/', (req, res, next) => {
   const offset = (page - 1) * pageSize;
   models.aula
     .findAndCountAll({
-      attributes: ['id', 'numero_lab'],
+      attributes: ['id', 'nroAula'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+        },
+      ],
       limit: pageSize,
       offset,
     })
@@ -95,8 +112,8 @@ router.get('/', (req, res, next) => {
  *           schema:
  *             type: object
  *             properties:
- *               numero_lab:
- *                 type: string
+ *               nroAula:
+ *                 type: integer
  *                 description: Número de laboratorio del aula
  *     responses:
  *       201:
@@ -116,7 +133,7 @@ router.get('/', (req, res, next) => {
  */
 router.post('/', (req, res) => {
   models.aula
-    .create({ numero_lab: req.body.numero_lab })
+    .create({ nroAula: req.body.nroAula })
     .then((aula) => res.status(201).send({ id: aula.id }))
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
@@ -129,16 +146,6 @@ router.post('/', (req, res) => {
       }
     });
 });
-
-const findAula = (id, { onSuccess, onNotFound, onError }) => {
-  models.aula
-    .findOne({
-      attributes: ['id', 'numero_lab'],
-      where: { id },
-    })
-    .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
-    .catch(() => onError());
-};
 
 /**
  * @swagger
@@ -164,9 +171,20 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *                 id:
  *                   type: integer
  *                   description: ID del aula
- *                 numero_lab:
- *                   type: string
+ *                 nroLab:
+ *                   type: integer
  *                   description: Número de laboratorio del aula
+ *                 materia:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         description: ID de la materia
+ *                       nombre:
+ *                         type: string
+ *                         description: Nombre de la materia
  *       404:
  *         description: Aula no encontrada
  *       500:
@@ -179,6 +197,22 @@ router.get('/:id', (req, res) => {
     onError: () => res.sendStatus(500),
   });
 });
+
+const findAula = (id, { onSuccess, onNotFound, onError }) => {
+  models.aula
+    .findOne({
+      attributes: ['id', 'nroAula'],
+      include: [
+        {
+          model: models.materia,
+          attributes: ['id', 'nombre'],
+        },
+      ],
+      where: { id },
+    })
+    .then((aula) => (aula ? onSuccess(aula) : onNotFound()))
+    .catch(() => onError());
+};
 
 /**
  * @swagger
@@ -200,8 +234,8 @@ router.get('/:id', (req, res) => {
  *           schema:
  *             type: object
  *             properties:
- *               numero_lab:
- *                 type: string
+ *               nroAula:
+ *                 type: integer
  *                 description: Número de laboratorio del aula
  *     responses:
  *       200:
@@ -216,7 +250,7 @@ router.get('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   const onSuccess = (aula) =>
     aula
-      .update({ numero_lab: req.body.numero_lab }, { fields: ['numero_lab'] })
+      .update({ nroAula: req.body.nroAula }, { fields: ['nroAula'] })
       .then(() => res.sendStatus(200))
       .catch((error) => {
         if (error === 'SequelizeUniqueConstraintError: Validation error') {
