@@ -134,7 +134,14 @@ router.get('/', (req, res, next) => {
 router.post('/', (req, res) => {
   models.aula
     .create({ nroAula: req.body.nroAula })
-    .then((aula) => res.status(201).send({ id: aula.id }))
+    .then((aula) =>
+      res.status(201).send({
+        aula: {
+          id: aula.id,
+          nroAula: aula.nroAula,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res

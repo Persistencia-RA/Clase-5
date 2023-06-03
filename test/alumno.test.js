@@ -8,7 +8,7 @@ const models = require('../models');
 // Importa el archivo de entrada de tu API (server.js, app.js, etc.)
 const app = require('../app.js');
 
-describe('<< Test de Alumnos >>', () => {
+describe('// Test de Alumnos //', () => {
   before(() => {
     console.log(''); // Salto de línea
   });
@@ -20,9 +20,9 @@ describe('<< Test de Alumnos >>', () => {
       // Configura el stub para devolver el mock de la respuesta esperada
       findAndCountAllStub.resolves({
         rows: [
-          { nombre: 'Juan', apellido: 'Pérez' },
-          { nombre: 'María', apellido: 'Gómez' },
-          { nombre: 'Pedro', apellido: 'Rodríguez' },
+          { id: 1, nombre: 'Juan', apellido: 'Pérez' },
+          { id: 2, nombre: 'María', apellido: 'Gómez' },
+          { id: 3, nombre: 'Pedro', apellido: 'Rodríguez' },
         ],
         count: 3,
       });
@@ -42,6 +42,8 @@ describe('<< Test de Alumnos >>', () => {
       res.body.alumnos.forEach((alumno) => {
         // Verifica si el alumno es un objeto
         expect(alumno).to.be.an('object');
+        // Verifica si el alumno tiene la propiedad 'id'
+        expect(alumno).to.have.property('id');
         // Verifica si el alumno tiene la propiedad 'nombre'
         expect(alumno).to.have.property('nombre');
         // Verifica si el alumno tiene la propiedad 'apellido'
@@ -117,6 +119,40 @@ describe('<< Test de Alumnos >>', () => {
       findOneStub.restore();
     });
   });
+
+  /*   describe('PUT /alumno/:id', () => {
+    it('Debería actualizar un alumno por su ID', async () => {
+      // Mock del alumno existente en la base de datos
+      const alumnoMock = {
+        id: 1,
+        nombre: 'Juan',
+        apellido: 'Pablo',
+      };
+
+      // Stub de la función 'findOne' en el modelo alumno
+      const findOneStub = sinon.stub(models.alumno, 'findOne');
+      // Stub del método 'update' en el prototipo del modelo alumno
+      const updateStub = sinon.stub(models.alumno.prototype, 'update');
+
+      // Configurar el stub para que devuelva el mock del alumno encontrado
+      findOneStub.resolves(alumnoMock);
+      // Configurar el stub para que devuelva el número de filas afectadas [1] indicando que se realizó la actualización correctamente
+      updateStub.resolves();
+
+      // Realizar la solicitud de actualización del alumno y realizar las aserciones
+      const res = await request(app).put('/alumno/1').send({
+        nombre: 'Juan',
+        apellido: 'Pablo',
+      });
+
+      // Verificar que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+
+      // Restaurar el comportamiento original de la función 'findOne' y el método 'update'
+      findOneStub.restore();
+      updateStub.restore();
+    });
+  }); */
 
   /* describe('DELETE /alumno/:id', () => {
     it('Debería eliminar un alumno por su ID', async () => {

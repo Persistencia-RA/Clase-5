@@ -202,6 +202,7 @@ router.post('/', (req, res) => {
     .then((alumno) =>
       res.status(201).send({
         alumno: {
+          id: alumno.id,
           nombre: alumno.nombre,
           apellido: alumno.apellido,
         },
