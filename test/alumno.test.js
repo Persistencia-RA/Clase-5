@@ -1,41 +1,45 @@
 const chai = require('chai');
 const expect = chai.expect;
-const axios = require('axios');
+const request = require('supertest');
 const sinon = require('sinon');
+const models = require('../models');
+// const alumno = require('../routes/alumnos');
 
-// Crea una instancia de Axios con la URL base de tu servidor
-const api = axios.create({
-  baseURL: 'http://localhost:3001',
-});
+// Importa el archivo de entrada de tu API (server.js, app.js, etc.)
+const app = require('../app.js');
 
-describe('API de Alumnos', () => {
+describe('<< Test de Alumnos >>', () => {
+  before(() => {
+    console.log(''); // Salto de línea
+  });
   describe('GETALL /alumno', () => {
     it('Debería devolver un array con todos los alumnos', async () => {
-      // Crea un mock de la respuesta esperada
-      const mockResponse = {
-        alumnos: [
+      // Crea un stub del controlador de alumnos
+      const findAndCountAllStub = sinon.stub(models.alumno, 'findAndCountAll');
+
+      // Configura el stub para devolver el mock de la respuesta esperada
+      findAndCountAllStub.resolves({
+        rows: [
           { nombre: 'Juan', apellido: 'Pérez' },
           { nombre: 'María', apellido: 'Gómez' },
           { nombre: 'Pedro', apellido: 'Rodríguez' },
         ],
-      };
-
-      // Crea un stub de la función 'get' en axios
-      const getStub = sinon.stub(axios, 'get').resolves({ data: mockResponse });
+        count: 3,
+      });
 
       // Realiza la solicitud y realiza las aserciones
-      const res = await api.get('/alumno');
+      const res = await request(app).get('/alumno');
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
       // Verifica si la respuesta es un objeto
-      expect(res.data).to.be.an('object');
+      expect(res.body).to.be.an('object');
       // Verifica si existe la propiedad 'alumnos'
-      expect(res.data).to.have.property('alumnos');
+      expect(res.body).to.have.property('alumnos');
       // Verifica si 'alumnos' es un array
-      expect(res.data.alumnos).to.be.an('array');
+      expect(res.body.alumnos).to.be.an('array');
       // Verificar propiedades para cada alumno en el array
-      res.data.alumnos.forEach((alumno) => {
+      res.body.alumnos.forEach((alumno) => {
         // Verifica si el alumno es un objeto
         expect(alumno).to.be.an('object');
         // Verifica si el alumno tiene la propiedad 'nombre'
@@ -44,108 +48,101 @@ describe('API de Alumnos', () => {
         expect(alumno).to.have.property('apellido');
       });
 
-      // Restaura el comportamiento original de la función 'get'
-      getStub.restore();
+      // Restaura el comportamiento original del controlador de alumnos
+      findAndCountAllStub.restore();
     });
   });
 
   describe('POST /alumno', () => {
     it('Debería crear un nuevo alumno', async () => {
-      // Crea un mock de la respuesta esperada
-      const mockResponse = {
-        alumno: { nombre: 'Juan', apellido: 'Pérez' },
-      };
-
-      // Crea un stub de la función 'post' en axios
-      const postStub = sinon
-        .stub(axios, 'post')
-        .resolves({ data: mockResponse });
-
-      // Datos del nuevo alumno
-      const nuevoAlumno = { nombre: 'Juan', apellido: 'Pérez' };
+      // Crea un stub del modelo alumno
+      const alumnoStub = sinon.stub(models.alumno, 'create').resolves({
+        nombre: 'Lucas',
+        apellido: 'Robles',
+      });
 
       // Realiza la solicitud de creación del alumno y realiza las aserciones
-      const res = await api.post('/alumno', nuevoAlumno);
+      const res = await request(app).post('/alumno').send({
+        nombre: 'Lucas',
+        apellido: 'Robles',
+      });
 
       // Verificar que la respuesta tenga el código 201
       expect(res.status).to.equal(201);
       // Verifica si la respuesta es un objeto
-      expect(res.data).to.be.an('object');
+      expect(res.body).to.be.an('object');
       // Verificar si la respuesta contiene la propiedad 'alumno'
-      expect(res.data).to.have.property('alumno');
+      expect(res.body).to.have.property('alumno');
       // Verificar si el objeto 'alumno' coincide con el valor esperado
-      expect(res.data.alumno).to.deep.equal({
-        nombre: 'Juan',
-        apellido: 'Pérez',
+      expect(res.body.alumno).to.deep.equal({
+        nombre: 'Lucas',
+        apellido: 'Robles',
       });
 
-      // Restaura el comportamiento original de la función 'post'
-      postStub.restore();
+      // Restaura el comportamiento original del modelo alumno
+      alumnoStub.restore();
     });
   });
 
   describe('GET /alumno/:id', () => {
     it('Debería obtener un alumno por su ID', async () => {
-      // Crea un mock de la respuesta esperada
-      const mockAlumno = {
+      // Crea un mock del modelo alumno
+      const alumnoMock = {
         id: 1,
         nombre: 'Juan',
-        apellido: 'Pérez',
-        carrera: {
-          nombre: 'Ingeniería en Sistemas',
-        },
-        materia: [
-          {
-            id: 1,
-            nombre: 'Programación I',
-            nota: {
-              notaPrimerParcial: 8,
-              notaSegundoParcial: 7,
-            },
-          },
-          {
-            id: 2,
-            nombre: 'Base de Datos',
-            nota: {
-              notaPrimerParcial: 5,
-              notaSegundoParcial: 7,
-            },
-          },
-          {
-            id: 3,
-            nombre: 'Organización de computadoras',
-            nota: {
-              notaPrimerParcial: 8,
-              notaSegundoParcial: 7,
-            },
-          },
-        ],
+        apellido: 'Pablo',
       };
 
-      // Crea un stub de la función 'get' en axios
-      const getStub = sinon.stub(axios, 'get').resolves({ data: mockAlumno });
+      // Crea un stub de la función 'findOne' en el modelo alumno
+      const findOneStub = sinon.stub(models.alumno, 'findOne');
 
-      // ID del alumno a consultar
-      const alumnoId = 1;
+      // Configura el stub para devolver el mock de la respuesta esperada
+      findOneStub.resolves(alumnoMock);
 
-      // Realiza la solicitud de obtención del alumno por ID y realiza las aserciones
-      const res = await api.get(`/alumno/${alumnoId}`);
+      // Realiza la solicitud para obtener el alumno por su ID y realiza las aserciones
+      const res = await request(app).get('/alumno/1');
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
       // Verifica si la respuesta es un objeto
-      expect(res.data).to.be.an('object');
-      // Verificar si la respuesta coincide con el alumno esperado
-      expect(res.data).to.deep.equal({
-        id: mockAlumno.id,
-        nombre: mockAlumno.nombre,
-        apellido: mockAlumno.apellido,
-        carrera: mockAlumno.carrera,
-        materia: mockAlumno.materia,
+      expect(res.body).to.be.an('object');
+      // Verificar si la respuesta coincide con el valor esperado
+      expect(res.body).to.deep.equal({
+        id: 1,
+        nombre: 'Juan',
+        apellido: 'Pablo',
       });
 
-      // Restaura el comportamiento original de la función 'get'
-      getStub.restore();
+      // Restaura el comportamiento original del modelo alumno
+      findOneStub.restore();
     });
   });
+
+  /* describe('DELETE /alumno/:id', () => {
+    it('Debería eliminar un alumno por su ID', async () => {
+      // Crea un objeto mock de alumno con los datos del alumno a eliminar
+      const alumnoMock = {
+        id: 1,
+        nombre: 'Juan',
+        apellido: 'Pablo',
+        // Crea un stub para el método 'destroy' del alumno que resuelve sin hacer nada
+        destroy: sinon.stub().resolves(),
+      };
+
+      // Stub del método 'findOne' en el modelo alumno para devolver el objeto alumnoMock
+      const findOneStub = sinon.stub(models.alumno, 'findOne');
+      findOneStub.withArgs({ where: { id: 1 } }).resolves(alumnoMock);
+
+      // Realiza la solicitud para eliminar el alumno por su ID y realiza las aserciones
+      const res = await request(app).delete('/alumno/1');
+
+      // Verifica que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+      // Verifica si la respuesta contiene el mensaje esperado
+      expect(res.text).to.equal('Alumno eliminado con éxito');
+
+      // Restaura el comportamiento original del método 'findOne' en el modelo alumno
+      findOneStub.restore();
+    });
+  }); */
 });
