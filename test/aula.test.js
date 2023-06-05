@@ -85,33 +85,86 @@ describe('// Test de Aulas //', () => {
 
   describe('GET /aula/:id', () => {
     it('Debería obtener un aula por su ID', async () => {
-      // Crea un mock del modelo aula
-      const aulaMock = {
+      // Crea un stub del método findOne del modelo Aula
+      const findOneStub = sinon.stub(models.aula, 'findOne').resolves({
         id: 1,
-        nroAula: 508,
-      };
+        nroAula: 402,
+      });
 
-      // Crea un stub de la función 'findOne' en el modelo aula
-      const findOneStub = sinon.stub(models.aula, 'findOne');
-
-      // Configura el stub para devolver el mock de la respuesta esperada
-      findOneStub.resolves(aulaMock);
-
-      // Realiza la solicitud para obtener el aula por su ID y realiza las aserciones
+      // Realiza la solicitud de obtención del aula y realiza las aserciones
       const res = await request(app).get('/aula/1');
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
-      // Verifica si la respuesta es un objeto
+      // Verificar si la respuesta es un objeto
       expect(res.body).to.be.an('object');
-      // Verificar si la respuesta coincide con el valor esperado
+      // Verificar si el objeto coincide con el valor esperado
       expect(res.body).to.deep.equal({
         id: 1,
-        nroAula: 508,
+        nroAula: 402,
       });
 
-      // Restaura el comportamiento original del modelo aula
+      // Restaurar el comportamiento original del modelo Aula
       findOneStub.restore();
+    });
+  });
+
+  describe('PUT /aula/:id', () => {
+    it('Debería actualizar un aula', async () => {
+      // Crea un stub del método update del modelo Aula
+      const updateStub = sinon.stub(models.aula, 'update').resolves([1]);
+
+      // Crea un mock del método findOne que devuelve un aula existente
+      const findOneMock = sinon.stub(models.aula, 'findOne').resolves({
+        id: 1,
+        nroAula: 402,
+        update: updateStub, // Añade el stub de update al objeto aula
+      });
+
+      // Realiza la solicitud de actualización del aula y realiza las aserciones
+      const res = await request(app).put('/aula/1').send({
+        id: 1,
+        nroAula: 450,
+      });
+
+      // Verificar que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+
+      // Restaurar el comportamiento original del modelo Aula
+      updateStub.restore();
+      findOneMock.restore();
+    });
+  });
+
+  describe('DELETE /aula/:id', () => {
+    it('Debería eliminar un aula', async () => {
+      // Crea un stub del modelo aula
+      const destroyStub = sinon.stub(models.aula, 'destroy').resolves(1);
+
+      // Crea un mock del método findOne que devuelve un aula existente
+      const findOneMock = sinon.stub(models.aula, 'findOne').resolves({
+        id: 1,
+        nroAula: 450,
+        destroy: destroyStub, // Añade el stub de destroy al objeto aula
+      });
+
+      // Realiza la solicitud de eliminación del aula y realiza las aserciones
+      const res = await request(app).delete('/aula/1');
+
+      // Verificar que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+      // Verificar que la respuesta tenga el mensaje esperado
+      expect(res.body).to.have.property(
+        'message',
+        'Aula eliminada correctamente',
+      );
+
+      // Verificar que el stub haya sido llamado una vez
+      // expect(destroyStub.calledOnce).to.be.true;
+
+      // Restaurar el comportamiento original del modelo Alumno
+      destroyStub.restore();
+      findOneMock.restore();
     });
   });
 });

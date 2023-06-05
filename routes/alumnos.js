@@ -414,7 +414,9 @@ router.delete('/:id', (req, res) => {
   const onSuccess = (alumno) =>
     alumno
       .destroy()
-      .then(() => res.status(200).send('Alumno eliminado con éxito'))
+      .then(() =>
+        res.status(200).json({ message: 'Alumno eliminado correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findAlumno(req.params.id, {
     onSuccess,

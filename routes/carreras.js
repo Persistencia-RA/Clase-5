@@ -277,7 +277,9 @@ router.delete('/:id', (req, res) => {
   const onSuccess = (carrera) =>
     carrera
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Carrera eliminada correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findCarrera(req.params.id, {
     onSuccess,

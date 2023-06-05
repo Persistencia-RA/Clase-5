@@ -3,7 +3,6 @@ const expect = chai.expect;
 const request = require('supertest');
 const sinon = require('sinon');
 const models = require('../models');
-// const alumno = require('../routes/alumnos');
 
 // Importa el archivo de entrada de tu API (server.js, app.js, etc.)
 const app = require('../app.js');
@@ -88,97 +87,90 @@ describe('// Test de Alumnos //', () => {
 
   describe('GET /alumno/:id', () => {
     it('Debería obtener un alumno por su ID', async () => {
-      // Crea un mock del modelo alumno
-      const alumnoMock = {
+      // Crea un stub del método findOne del modelo Alumno
+      const findOneStub = sinon.stub(models.alumno, 'findOne').resolves({
         id: 1,
-        nombre: 'Juan',
-        apellido: 'Pablo',
-      };
+        nombre: 'Julian',
+        apellido: 'Salas',
+      });
 
-      // Crea un stub de la función 'findOne' en el modelo alumno
-      const findOneStub = sinon.stub(models.alumno, 'findOne');
-
-      // Configura el stub para devolver el mock de la respuesta esperada
-      findOneStub.resolves(alumnoMock);
-
-      // Realiza la solicitud para obtener el alumno por su ID y realiza las aserciones
+      // Realiza la solicitud de obtención del alumno y realiza las aserciones
       const res = await request(app).get('/alumno/1');
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
-      // Verifica si la respuesta es un objeto
+      // Verificar si la respuesta es un objeto
       expect(res.body).to.be.an('object');
-      // Verificar si la respuesta coincide con el valor esperado
+      // Verificar si el objeto coincide con el valor esperado
       expect(res.body).to.deep.equal({
         id: 1,
-        nombre: 'Juan',
-        apellido: 'Pablo',
+        nombre: 'Julian',
+        apellido: 'Salas',
       });
 
-      // Restaura el comportamiento original del modelo alumno
+      // Restaurar el comportamiento original del modelo Alumno
       findOneStub.restore();
     });
   });
 
-  /*   describe('PUT /alumno/:id', () => {
-    it('Debería actualizar un alumno por su ID', async () => {
-      // Mock del alumno existente en la base de datos
-      const alumnoMock = {
+  describe('PUT /alumno/:id', () => {
+    it('Debería actualizar un alumno', async () => {
+      // Crea un stub del método update del modelo Alumno
+      const updateStub = sinon.stub(models.alumno, 'update').resolves([1]);
+
+      // Crea un mock del método findOne que devuelve un alumno existente
+      const findOneMock = sinon.stub(models.alumno, 'findOne').resolves({
         id: 1,
-        nombre: 'Juan',
-        apellido: 'Pablo',
-      };
+        nombre: 'Lucas',
+        apellido: 'Rodriguez',
+        update: updateStub, // Añade el stub de update al objeto alumno
+      });
 
-      // Stub de la función 'findOne' en el modelo alumno
-      const findOneStub = sinon.stub(models.alumno, 'findOne');
-      // Stub del método 'update' en el prototipo del modelo alumno
-      const updateStub = sinon.stub(models.alumno.prototype, 'update');
-
-      // Configurar el stub para que devuelva el mock del alumno encontrado
-      findOneStub.resolves(alumnoMock);
-      // Configurar el stub para que devuelva el número de filas afectadas [1] indicando que se realizó la actualización correctamente
-      updateStub.resolves();
-
-      // Realizar la solicitud de actualización del alumno y realizar las aserciones
+      // Realiza la solicitud de actualización del alumno y realiza las aserciones
       const res = await request(app).put('/alumno/1').send({
-        nombre: 'Juan',
-        apellido: 'Pablo',
+        nombre: 'Lucas',
+        apellido: 'Gómez',
       });
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
 
-      // Restaurar el comportamiento original de la función 'findOne' y el método 'update'
-      findOneStub.restore();
+      // Restaurar el comportamiento original del modelo Alumno
       updateStub.restore();
+      findOneMock.restore();
     });
-  }); */
+  });
 
-  /* describe('DELETE /alumno/:id', () => {
-    it('Debería eliminar un alumno por su ID', async () => {
-      // Crea un objeto mock de alumno con los datos del alumno a eliminar
-      const alumnoMock = {
+  describe('DELETE /alumno/:id', () => {
+    it('Debería eliminar un alumno', async () => {
+      // Crea un stub del modelo Alumno
+      const destroyStub = sinon.stub(models.alumno, 'destroy').resolves(1);
+
+      // Crea un mock del método findOne que devuelve un alumno existente
+      const findOneMock = sinon.stub(models.alumno, 'findOne').resolves({
         id: 1,
-        nombre: 'Juan',
-        apellido: 'Pablo',
-        // Crea un stub para el método 'destroy' del alumno que resuelve sin hacer nada
-        destroy: sinon.stub().resolves(),
-      };
+        nombre: 'Lucas',
+        apellido: 'Rodriguez',
+        destroy: destroyStub, // Añade el stub de destroy al objeto alumno
+      });
 
-      // Stub del método 'findOne' en el modelo alumno para devolver el objeto alumnoMock
-      const findOneStub = sinon.stub(models.alumno, 'findOne');
-      findOneStub.withArgs({ where: { id: 1 } }).resolves(alumnoMock);
-
-      // Realiza la solicitud para eliminar el alumno por su ID y realiza las aserciones
+      // Realiza la solicitud de eliminación del alumno y realiza las aserciones
       const res = await request(app).delete('/alumno/1');
 
-      // Verifica que la respuesta tenga el código 200
+      // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
-      // Verifica si la respuesta contiene el mensaje esperado
-      expect(res.text).to.equal('Alumno eliminado con éxito');
+      // Verificar que la respuesta tenga el mensaje esperado
+      expect(res.body).to.have.property(
+        'message',
+        'Alumno eliminado correctamente',
+      );
 
-      // Restaura el comportamiento original del método 'findOne' en el modelo alumno
-      findOneStub.restore();
+      // Verificar que el stub haya sido llamado una vez
+      // expect(destroyStub.calledOnce).to.be.true;
+
+      // Restaurar el comportamiento original del modelo Alumno
+      destroyStub.restore();
+      findOneMock.restore();
     });
-  }); */
+  });
 });

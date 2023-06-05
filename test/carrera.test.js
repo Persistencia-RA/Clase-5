@@ -85,33 +85,86 @@ describe('// Test de Carreras //', () => {
 
   describe('GET /carrera/:id', () => {
     it('Debería obtener una carrera por su ID', async () => {
-      // Crea un mock del modelo carrera
-      const carreraMock = {
+      // Crea un stub del método findOne del modelo Carrera
+      const findOneStub = sinon.stub(models.carrera, 'findOne').resolves({
         id: 1,
-        nombre: 'Licenciatura en Redes Informáticas',
-      };
+        nombre: 'Licenciatura en Manipulación de alimentos',
+      });
 
-      // Crea un stub de la función 'findOne' en el modelo carrera
-      const findOneStub = sinon.stub(models.carrera, 'findOne');
-
-      // Configura el stub para devolver el mock de la respuesta esperada
-      findOneStub.resolves(carreraMock);
-
-      // Realiza la solicitud para obtener la carrera por su ID y realiza las aserciones
+      // Realiza la solicitud de obtención de la carrera y realiza las aserciones
       const res = await request(app).get('/carrera/1');
 
       // Verificar que la respuesta tenga el código 200
       expect(res.status).to.equal(200);
-      // Verifica si la respuesta es un objeto
+      // Verificar si la respuesta es un objeto
       expect(res.body).to.be.an('object');
-      // Verificar si la respuesta coincide con el valor esperado
+      // Verificar si el objeto coincide con el valor esperado
       expect(res.body).to.deep.equal({
         id: 1,
-        nombre: 'Licenciatura en Redes Informáticas',
+        nombre: 'Licenciatura en Manipulación de alimentos',
       });
 
-      // Restaura el comportamiento original del modelo carrera
+      // Restaurar el comportamiento original del modelo Carrera
       findOneStub.restore();
+    });
+  });
+
+  describe('PUT /carrera/:id', () => {
+    it('Debería actualizar una carrera', async () => {
+      // Crea un stub del método update del modelo Carrera
+      const updateStub = sinon.stub(models.carrera, 'update').resolves([1]);
+
+      // Crea un mock del método findOne que devuelve un carrera existente
+      const findOneMock = sinon.stub(models.carrera, 'findOne').resolves({
+        id: 1,
+        nombre: 'Licenciatura en Manipulación de alimentos',
+        update: updateStub, // Añade el stub de update al objeto Carrera
+      });
+
+      // Realiza la solicitud de actualización de la carrera y realiza las aserciones
+      const res = await request(app).put('/carrera/1').send({
+        id: 1,
+        nombre: 'Licenciatura en Bromatologia',
+      });
+
+      // Verificar que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+
+      // Restaurar el comportamiento original del modelo Carrera
+      updateStub.restore();
+      findOneMock.restore();
+    });
+  });
+
+  describe('DELETE /carrera/:id', () => {
+    it('Debería eliminar una carrera', async () => {
+      // Crea un stub del modelo carrera
+      const destroyStub = sinon.stub(models.carrera, 'destroy').resolves(1);
+
+      // Crea un mock del método findOne que devuelve una carrera existente
+      const findOneMock = sinon.stub(models.carrera, 'findOne').resolves({
+        id: 1,
+        nombre: 'Licenciatura en Manipulación de alimentos',
+        destroy: destroyStub, // Añade el stub de destroy al objeto carrera
+      });
+
+      // Realiza la solicitud de eliminación de la carrera y realiza las aserciones
+      const res = await request(app).delete('/carrera/1');
+
+      // Verificar que la respuesta tenga el código 200
+      expect(res.status).to.equal(200);
+      // Verificar que la respuesta tenga el mensaje esperado
+      expect(res.body).to.have.property(
+        'message',
+        'Carrera eliminada correctamente',
+      );
+
+      // Verificar que el stub haya sido llamado una vez
+      // expect(destroyStub.calledOnce).to.be.true;
+
+      // Restaurar el comportamiento original del modelo Carrera
+      destroyStub.restore();
+      findOneMock.restore();
     });
   });
 });

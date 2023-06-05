@@ -303,7 +303,9 @@ router.delete('/:id', (req, res) => {
   const onSuccess = (aula) =>
     aula
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Aula eliminada correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findAula(req.params.id, {
     onSuccess,
