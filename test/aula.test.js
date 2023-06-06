@@ -4,7 +4,7 @@ const request = require('supertest');
 const sinon = require('sinon');
 const models = require('../models');
 
-// Importa el archivo de entrada de tu API (server.js, app.js, etc.)
+// Archivo de entrada de la API
 const app = require('../app.js');
 
 describe('// Test de Aulas //', () => {
@@ -15,7 +15,8 @@ describe('// Test de Aulas //', () => {
     it('Debería devolver un array con todas las aulas', async () => {
       // Crea un stub del controlador de aulas
       const findAndCountAllStub = sinon.stub(models.aula, 'findAndCountAll');
-
+      const nroAulasEsperados = [500, 600, 700];
+      const idsEsperados = [1, 2, 3];
       // Configura el stub para devolver el mock de la respuesta esperada
       findAndCountAllStub.resolves({
         rows: [
@@ -38,13 +39,17 @@ describe('// Test de Aulas //', () => {
       // Verifica si 'aulas' es un array
       expect(res.body.aulas).to.be.an('array');
       // Verificar propiedades para cada aula en el array
-      res.body.aulas.forEach((aula) => {
+      res.body.aulas.forEach((aula, index) => {
         // Verifica si el aula es un objeto
         expect(aula).to.be.an('object');
         // Verifica si el alumno tiene la propiedad 'nroAula'
         expect(aula).to.have.property('id');
         // Verifica si el alumno tiene la propiedad 'nroAula'
         expect(aula).to.have.property('nroAula');
+        // Verifica si la propiedad 'nroAula' del aula es el de los mocks
+        expect(aula.nroAula).to.equal(nroAulasEsperados[index]);
+        // Verifica si la propiedad 'id' del aula es la de los mocks
+        expect(aula.id).to.equal(idsEsperados[index]);
       });
 
       // Restaura el comportamiento original del controlador de alumnos

@@ -4,7 +4,7 @@ const request = require('supertest');
 const sinon = require('sinon');
 const models = require('../models');
 
-// Importa el archivo de entrada de tu API (server.js, app.js, etc.)
+// Archivo de entrada de la API
 const app = require('../app.js');
 
 describe('// Test de Alumnos //', () => {
@@ -15,7 +15,9 @@ describe('// Test de Alumnos //', () => {
     it('Debería devolver un array con todos los alumnos', async () => {
       // Crea un stub del controlador de alumnos
       const findAndCountAllStub = sinon.stub(models.alumno, 'findAndCountAll');
-
+      const nombresEsperados = ['Juan', 'María', 'Pedro'];
+      const apellidosEsperados = ['Pérez', 'Gómez', 'Rodríguez'];
+      const idsEsperados = [1, 2, 3];
       // Configura el stub para devolver el mock de la respuesta esperada
       findAndCountAllStub.resolves({
         rows: [
@@ -38,7 +40,7 @@ describe('// Test de Alumnos //', () => {
       // Verifica si 'alumnos' es un array
       expect(res.body.alumnos).to.be.an('array');
       // Verificar propiedades para cada alumno en el array
-      res.body.alumnos.forEach((alumno) => {
+      res.body.alumnos.forEach((alumno, index) => {
         // Verifica si el alumno es un objeto
         expect(alumno).to.be.an('object');
         // Verifica si el alumno tiene la propiedad 'id'
@@ -47,6 +49,12 @@ describe('// Test de Alumnos //', () => {
         expect(alumno).to.have.property('nombre');
         // Verifica si el alumno tiene la propiedad 'apellido'
         expect(alumno).to.have.property('apellido');
+        // Verifica si  la propiedad 'nombre' del alumno es la de los mocks
+        expect(alumno.nombre).to.equal(nombresEsperados[index]);
+        // Verifica si  la propiedad 'apellido' del alumno es la de los mocks
+        expect(alumno.apellido).to.equal(apellidosEsperados[index]);
+        // Verifica si  la propiedad 'id' del alumno es la de los mocks
+        expect(alumno.id).to.equal(idsEsperados[index]);
       });
 
       // Restaura el comportamiento original del controlador de alumnos

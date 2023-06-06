@@ -170,7 +170,14 @@ router.post('/', (req, res) => {
     .create({
       nombre: req.body.nombre,
     })
-    .then((materia) => res.status(201).send({ id: materia.id }))
+    .then((materia) =>
+      res.status(201).send({
+        materia: {
+          id: materia.id,
+          nombre: materia.nombre,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -366,7 +373,9 @@ router.delete('/:id', (req, res) => {
   const onSuccess = (materia) =>
     materia
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Materia eliminada correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findMateria(req.params.id, {
     onSuccess,

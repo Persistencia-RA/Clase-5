@@ -4,7 +4,7 @@ const request = require('supertest');
 const sinon = require('sinon');
 const models = require('../models');
 
-// Importa el archivo de entrada de tu API (server.js, app.js, etc.)
+// Archivo de entrada de la API
 const app = require('../app.js');
 
 describe('// Test de Carreras //', () => {
@@ -15,7 +15,12 @@ describe('// Test de Carreras //', () => {
     it('Debería devolver un array con todas las carreras', async () => {
       // Crea un stub del controlador de carreras
       const findAndCountAllStub = sinon.stub(models.carrera, 'findAndCountAll');
-
+      const nombresEsperados = [
+        'Licenciatura en Inteligencia Artificial',
+        'Ingenieria Electronica',
+        'Licenciatura en Bioquímica',
+      ];
+      const idsEsperados = [1, 2, 3];
       // Configura el stub para devolver el mock de la respuesta esperada
       findAndCountAllStub.resolves({
         rows: [
@@ -38,13 +43,17 @@ describe('// Test de Carreras //', () => {
       // Verifica si 'carreras' es un array
       expect(res.body.carreras).to.be.an('array');
       // Verificar propiedades para cada carreras en el array
-      res.body.carreras.forEach((carrera) => {
-        // Verifica si el carrera es un objeto
+      res.body.carreras.forEach((carrera, index) => {
+        // Verifica si la carrera es un objeto
         expect(carrera).to.be.an('object');
         // Verifica si la carrera tiene la propiedad 'id'
         expect(carrera).to.have.property('id');
         // Verifica si la carrera tiene la propiedad 'nombre'
         expect(carrera).to.have.property('nombre');
+        // Verifica si  la propiedad 'nombre' de carrera es la de los mocks
+        expect(carrera.nombre).to.equal(nombresEsperados[index]);
+        // Verifica si  la propiedad 'id' de carrera es la de los mocks
+        expect(carrera.id).to.equal(idsEsperados[index]);
       });
 
       // Restaura el comportamiento original del controlador de carreras
