@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
+const verifyToken = require('../libs/verifyToken');
 
 /**
  * @swagger
@@ -9,6 +10,8 @@ const models = require('../models');
  *    summary: Obtiene todos los profesores
  *    tags:
  *      - Profesores
+ *    security:
+ *       - bearerAuth: []
  *    parameters:
  *       - name: page
  *         in: query
@@ -64,7 +67,7 @@ const models = require('../models');
  *      500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 
@@ -101,6 +104,8 @@ router.get('/', (req, res, next) => {
  *   post:
  *     summary: Crea un nuevo profesor
  *     tags: [Profesores]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -138,7 +143,7 @@ router.get('/', (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
   const r = req.body;
   models.profesor
     .create({
@@ -178,6 +183,8 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
  *     summary: Obtiene un profesor por su ID
  *     tags:
  *       - Profesores
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -217,7 +224,7 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   findProfesor(req.params.id, {
     onSuccess: (profesor) => res.send(profesor),
     onNotFound: () => res.sendStatus(404),
@@ -232,6 +239,8 @@ router.get('/:id', (req, res) => {
  *     summary: Actualiza un profesor por su ID
  *     tags:
  *       - Profesores
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -269,7 +278,7 @@ router.get('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
   const r = req.body;
   const onSuccess = (profesor) =>
     profesor
@@ -306,6 +315,8 @@ router.put('/:id', (req, res) => {
  *   delete:
  *     summary: Elimina un profesor por su ID
  *     tags: [Profesores]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -320,7 +331,7 @@ router.put('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (profesor) =>
     profesor
       .destroy()
