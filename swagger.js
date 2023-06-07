@@ -11,9 +11,9 @@ const swaggerOptions = {
     securityDefinitions: {
       bearerAuth: {
         type: 'apiKey',
-        name: 'Authorization',
-        scheme: 'bearer',
-        in: 'header',
+        name: 'x-access-token',
+        scheme: 'x-access-token',
+        in: 'x-access-token',
       },
     },
   },

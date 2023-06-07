@@ -7,9 +7,9 @@ const verifyToken = require('../libs/verifyToken');
  * components:
  *   securitySchemes:
  *     bearerAuth:
- *       type: http
- *       scheme: bearer
- *       bearerFormat: JWT
+ *       type: apiKey
+ *       name: x-access-token
+ *       in: header
  */
 
 /**

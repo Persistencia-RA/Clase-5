@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
 
-module.exports = async function verifyToken(req, res, next) {
+module.exports = function verifyToken(req, res, next) {
   // Obtener el token de los encabezados
   const token = req.headers['x-access-token'];
 
@@ -9,15 +9,19 @@ module.exports = async function verifyToken(req, res, next) {
   if (!token) {
     return res
       .status(401)
-      .send({ auth: false, message: 'No Token aws Provided' });
+      .json({ auth: false, message: 'No se proporcionó un token' });
   }
 
   // Decodificar el token
-  const decoded = await jwt.verify(token, config.secret);
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ auth: false, message: 'Token inválido' });
+    }
 
-  // Guardar el token en el objeto de solicitud para usarlo en las rutas
-  req.userId = decoded.id;
+    // Guardar el ID del usuario decodificado en req.userId
+    req.userId = decoded.id;
 
-  // Continuar con la siguiente función
-  next();
+    // Continuar con la siguiente función
+    next();
+  });
 };
