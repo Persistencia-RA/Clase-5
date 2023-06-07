@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const { usuario } = require('../models'); // Importa el modelo usuario correctamente
 const config = require('../config');
 
@@ -7,10 +8,13 @@ exports.signupController = async (req, res) => {
     // Receiving Data
     const { nombre, contraseña } = req.body;
 
+    // Encrypt the password
+    const hashedPassword = await bcrypt.hash(contraseña, 10);
+
     // Creating a new User
     await usuario.create({
       nombre,
-      contraseña,
+      contraseña: hashedPassword,
     });
 
     // Create a Token
@@ -41,7 +45,8 @@ exports.signinController = async (req, res) => {
   if (!user) {
     return res.status(404).send("The user doesn't exist");
   }
-  if (user.contraseña !== contraseña) {
+  const validPassword = await bcrypt.compare(contraseña, user.contraseña);
+  if (!validPassword) {
     return res.status(401).send({ auth: false, token: null });
   }
   const token = jwt.sign({ nombre }, config.secret, {
