@@ -117,6 +117,8 @@ router.get('/', verifyToken, (req, res, next) => {
  *     summary: Crea una nueva aula
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -143,7 +145,7 @@ router.get('/', verifyToken, (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
   models.aula
     .create({ nroAula: req.body.nroAula })
     .then((aula) => res.status(201).send({ id: aula.id }))
@@ -166,6 +168,8 @@ router.post('/', (req, res) => {
  *     summary: Obtiene un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -202,7 +206,7 @@ router.post('/', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   findAula(req.params.id, {
     onSuccess: (aula) => res.send(aula),
     onNotFound: () => res.sendStatus(404),
@@ -233,6 +237,8 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *     summary: Actualiza un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -259,7 +265,7 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
   const onSuccess = (aula) =>
     aula
       .update({ nroAula: req.body.nroAula }, { fields: ['nroAula'] })
@@ -290,6 +296,8 @@ router.put('/:id', (req, res) => {
  *     summary: Elimina un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -304,7 +312,7 @@ router.put('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (aula) =>
     aula
       .destroy()
