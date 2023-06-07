@@ -25,6 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/login', loginRouter);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use('/carrera', carrerasRouter);
@@ -36,7 +37,6 @@ app.use('/aula', aulaRouter);
 app.use('/profesor', profesorRouter);
 app.use('/alumno', alumnosRouter);
 app.use('/nota', notasRouter);
-app.use('/nota', loginRouter);
 app.use('/materiaCarrera', materiaCarreraRouter);
 // catch 404 and forward to error handler
 

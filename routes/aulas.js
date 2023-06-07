@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
+const verifyToken = require('../libs/verifyToken');
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
 
 /**
  * @swagger
@@ -22,6 +32,8 @@ const models = require('../models');
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: OK
@@ -64,7 +76,7 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 

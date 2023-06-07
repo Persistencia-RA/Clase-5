@@ -1,26 +1,20 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/usuario');
+const { usuario } = require('../models'); // Importa el modelo usuario correctamente
 const config = require('../config');
 
 exports.signupController = async (req, res) => {
   try {
     // Receiving Data
-    const { username, email, password } = req.body;
+    const { nombre, contraseña } = req.body;
 
     // Creating a new User
-    const user = new User({
-      username,
-      email,
-      password,
+    await usuario.create({
+      nombre,
+      contraseña,
     });
 
-    // encrypt the user's password
-    user.password = await user.encryptPassword(password);
-
-    await user.save();
-
     // Create a Token
-    const token = jwt.sign({ id: user.id }, config.secret, {
+    const token = jwt.sign({ nombre }, config.secret, {
       expiresIn: 60 * 60 * 24, // expires in 24 hours
     });
 
@@ -32,10 +26,9 @@ exports.signupController = async (req, res) => {
 };
 
 exports.getProfile = async (req, res) => {
-  // res.status(200).send(decoded);
-  // Search the Info base on the ID
-  // const user = await User.findById(decoded.id, { password: 0});
-  const user = await User.findById(req.userId, { password: 0 });
+  const user = await usuario.findByPk(req.userId, {
+    attributes: { exclude: ['contraseña'] },
+  });
   if (!user) {
     return res.status(404).send('No user found.');
   }
@@ -43,18 +36,15 @@ exports.getProfile = async (req, res) => {
 };
 
 exports.signinController = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const { nombre, contraseña } = req.body;
+  const user = await usuario.findOne({ where: { nombre } });
   if (!user) {
-    return res.status(404).send("The email doesn't exists");
+    return res.status(404).send("The user doesn't exist");
   }
-  const validPassword = await user.comparePassword(
-    req.body.password,
-    user.password,
-  );
-  if (!validPassword) {
+  if (user.contraseña !== contraseña) {
     return res.status(401).send({ auth: false, token: null });
   }
-  const token = jwt.sign({ id: user._id }, config.secret, {
+  const token = jwt.sign({ nombre }, config.secret, {
     expiresIn: 60 * 60 * 24,
   });
   res.status(200).json({ auth: true, token });

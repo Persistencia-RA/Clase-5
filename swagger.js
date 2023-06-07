@@ -8,6 +8,14 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Documentación de la API',
     },
+    securityDefinitions: {
+      bearerAuth: {
+        type: 'apiKey',
+        name: 'Authorization',
+        scheme: 'bearer',
+        in: 'header',
+      },
+    },
   },
   apis: ['./routes/*.js'], // Ruta de los archivos de rutas de tu aplicación
 };
