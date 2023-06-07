@@ -25,8 +25,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/login', loginRouter);
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/login', loginRouter);
 
 app.use('/carrera', carrerasRouter);
 // catch 404 and forward to error handler

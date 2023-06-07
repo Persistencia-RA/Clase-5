@@ -4,8 +4,8 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'API Documentation',
-      version: '1.0.0',
+      title: 'Persistencia',
+      version: '3.0.0',
       description: 'Documentación de la API',
     },
     securityDefinitions: {
@@ -17,7 +17,7 @@ const swaggerOptions = {
       },
     },
   },
-  apis: ['./routes/*.js'], // Ruta de los archivos de rutas de tu aplicación
+  apis: ['./routes/*.js'],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
