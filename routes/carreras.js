@@ -1,7 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
-
+const verifyToken = require('../libs/verifyToken');
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: apiKey
+ *       name: x-access-token
+ *       in: header
+ */
 /**
  * @swagger
  * /carrera:
@@ -9,6 +18,8 @@ const models = require('../models');
  *     summary: Obtiene todas las carreras
  *     tags:
  *       - Carreras
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: page
  *         in: query
@@ -50,7 +61,7 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 
@@ -91,6 +102,8 @@ router.get('/', (req, res, next) => {
  *   post:
  *     summary: Crea una nueva carrera
  *     tags: [Carreras]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -125,7 +138,7 @@ router.get('/', (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
   models.carrera
     .create({ nombre: req.body.nombre })
     .then((carrera) => res.status(201).send({ id: carrera.id }))
@@ -148,6 +161,8 @@ router.post('/', (req, res) => {
  *     summary: Obtiene una carrera por su ID
  *     tags:
  *       - Carreras
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -173,7 +188,7 @@ router.post('/', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   findCarrera(req.params.id, {
     onSuccess: (carrera) => res.send(carrera),
     onNotFound: () => res.sendStatus(404),
@@ -188,6 +203,8 @@ router.get('/:id', (req, res) => {
  *     summary: Actualiza una carrera por su ID
  *     tags:
  *       - Carreras
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -222,7 +239,7 @@ router.get('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
   const onSuccess = (carrera) =>
     carrera
       .update({ nombre: req.body.nombre }, { fields: ['nombre'] })
@@ -252,6 +269,8 @@ router.put('/:id', (req, res) => {
  *   delete:
  *     summary: Elimina una carrera por su ID
  *     tags: [Carreras]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -266,7 +285,7 @@ router.put('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (carrera) =>
     carrera
       .destroy()
