@@ -2,7 +2,15 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const verifyToken = require('../libs/verifyToken');
-
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: apiKey
+ *       name: x-access-token
+ *       in: header
+ */
 /**
  * @swagger
  * /profesor:
