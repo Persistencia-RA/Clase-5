@@ -1,7 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
-
+const verifyToken = require('../libs/verifyToken');
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: apiKey
+ *       name: x-access-token
+ *       in: header
+ */
 /**
  * @swagger
  * /materia:
@@ -9,6 +18,8 @@ const models = require('../models');
  *     summary: Obtiene todas las materias
  *     tags:
  *       - Materias
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: page
  *         in: query
@@ -82,7 +93,7 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 
@@ -132,6 +143,8 @@ router.get('/', (req, res, next) => {
  *   post:
  *     summary: Crea una nueva materia
  *     tags: [Materias]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -166,7 +179,7 @@ router.get('/', (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
   models.materia
     .create({
       nombre: req.body.nombre,
@@ -216,6 +229,8 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
  *     summary: Obtiene una materia por su ID
  *     tags:
  *       - Materias
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -270,7 +285,7 @@ const findMateria = (id, { onSuccess, onNotFound, onError }) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   findMateria(req.params.id, {
     onSuccess: (materia) => res.send(materia),
     onNotFound: () => res.sendStatus(404),
@@ -285,6 +300,8 @@ router.get('/:id', (req, res) => {
  *     summary: Actualiza una materia por su ID
  *     tags:
  *       - Materias
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -319,7 +336,7 @@ router.get('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
   const onSuccess = (materia) =>
     materia
       .update({ nombre: req.body.nombre }, { fields: ['nombre'] })
@@ -349,6 +366,8 @@ router.put('/:id', (req, res) => {
  *   delete:
  *     summary: Elimina una materia por su ID
  *     tags: [Materias]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -363,7 +382,7 @@ router.put('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (materia) =>
     materia
       .destroy()
