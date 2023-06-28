@@ -1,13 +1,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('login', {
+    return queryInterface.createTable('usuario', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      usuario: {
+      nombre: {
         type: Sequelize.STRING,
       },
       contraseña: {

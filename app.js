@@ -13,6 +13,7 @@ const profesorRouter = require('./routes/profesor');
 const alumnosRouter = require('./routes/alumnos');
 const notasRouter = require('./routes/notas');
 const materiaCarreraRouter = require('./routes/materiaCarreras');
+const loginRouter = require('./routes/auth');
 const app = express();
 
 // view engine setup
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/login', loginRouter);
 
 app.use('/carrera', carrerasRouter);
 // catch 404 and forward to error handler

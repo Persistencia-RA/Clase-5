@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const models = require('../models');
+const verifyToken = require('../libs/verifyToken');
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: apiKey
+ *       name: x-access-token
+ *       in: header
+ */
 
 /**
  * @swagger
@@ -22,6 +32,8 @@ const models = require('../models');
  *         schema:
  *           type: integer
  *           default: 10
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: OK
@@ -64,7 +76,7 @@ const models = require('../models');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', (req, res, next) => {
+router.get('/', verifyToken, (req, res, next) => {
   const page = req.query.page || 1;
   const pageSize = parseInt(req.query.pageSize) || 10;
 
@@ -72,6 +84,7 @@ router.get('/', (req, res, next) => {
   models.aula
     .findAndCountAll({
       attributes: ['id', 'nroAula'],
+      distinct: true,
       include: [
         {
           model: models.materia,
@@ -105,6 +118,8 @@ router.get('/', (req, res, next) => {
  *     summary: Crea una nueva aula
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -131,7 +146,7 @@ router.get('/', (req, res, next) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', (req, res) => {
+router.post('/', verifyToken, (req, res) => {
   models.aula
     .create({ nroAula: req.body.nroAula })
     .then((aula) =>
@@ -161,6 +176,8 @@ router.post('/', (req, res) => {
  *     summary: Obtiene un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -197,7 +214,7 @@ router.post('/', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', verifyToken, (req, res) => {
   findAula(req.params.id, {
     onSuccess: (aula) => res.send(aula),
     onNotFound: () => res.sendStatus(404),
@@ -228,6 +245,8 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *     summary: Actualiza un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -254,7 +273,7 @@ const findAula = (id, { onSuccess, onNotFound, onError }) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', (req, res) => {
+router.put('/:id', verifyToken, (req, res) => {
   const onSuccess = (aula) =>
     aula
       .update({ nroAula: req.body.nroAula }, { fields: ['nroAula'] })
@@ -285,6 +304,8 @@ router.put('/:id', (req, res) => {
  *     summary: Elimina un aula por ID
  *     tags:
  *       - Aulas
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -299,7 +320,7 @@ router.put('/:id', (req, res) => {
  *       500:
  *         description: Error interno del servidor
  */
-router.delete('/:id', (req, res) => {
+router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (aula) =>
     aula
       .destroy()
