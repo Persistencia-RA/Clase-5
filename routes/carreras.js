@@ -142,7 +142,14 @@ router.get('/', verifyToken, (req, res, next) => {
 router.post('/', verifyToken, (req, res) => {
   models.carrera
     .create({ nombre: req.body.nombre })
-    .then((carrera) => res.status(201).send({ id: carrera.id }))
+    .then((carrera) =>
+      res.status(201).send({
+        carrera: {
+          id: carrera.id,
+          nombre: carrera.nombre,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -290,7 +297,9 @@ router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (carrera) =>
     carrera
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Carrera eliminada correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findCarrera(req.params.id, {
     onSuccess,

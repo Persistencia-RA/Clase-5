@@ -149,7 +149,14 @@ router.get('/', verifyToken, (req, res, next) => {
 router.post('/', verifyToken, (req, res) => {
   models.aula
     .create({ nroAula: req.body.nroAula })
-    .then((aula) => res.status(201).send({ id: aula.id }))
+    .then((aula) =>
+      res.status(201).send({
+        aula: {
+          id: aula.id,
+          nroAula: aula.nroAula,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -317,7 +324,9 @@ router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (aula) =>
     aula
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Aula eliminada correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findAula(req.params.id, {
     onSuccess,

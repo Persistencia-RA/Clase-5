@@ -159,7 +159,15 @@ router.post('/', verifyToken, (req, res) => {
       nombre: r.nombre,
       apellido: r.apellido,
     })
-    .then((profesor) => res.status(201).send({ id: profesor.id }))
+    .then((profesor) =>
+      res.status(201).send({
+        profesor: {
+          id: profesor.id,
+          nombre: profesor.nombre,
+          apellido: profesor.apellido,
+        },
+      }),
+    )
     .catch((error) => {
       if (error === 'SequelizeUniqueConstraintError: Validation error') {
         res
@@ -344,7 +352,9 @@ router.delete('/:id', verifyToken, (req, res) => {
   const onSuccess = (profesor) =>
     profesor
       .destroy()
-      .then(() => res.sendStatus(200))
+      .then(() =>
+        res.status(200).json({ message: 'Profesor eliminado correctamente' }),
+      )
       .catch(() => res.sendStatus(500));
   findProfesor(req.params.id, {
     onSuccess,

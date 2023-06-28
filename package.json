@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
+    "prestart": "npm run test",
     "prepare": "husky install",
     "seed": "npx sequelize-cli db:seed:all",
-    "migrate": "npx sequelize db:migrate"
+    "migrate": "npx sequelize db:migrate",
+    "test": "mocha"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -25,6 +27,8 @@
     "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
+    "axios": "^1.4.0",
+    "chai": "^4.3.7",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard": "^17.0.0",
@@ -32,8 +36,12 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.3",
-    "nodemon": "^2.0.22",
-    "prettier": "^2.8.8"
+    "mocha": "^10.2.0",
+    "mocha-silent-reporter": "^1.0.0",
+    "mochawesome": "^7.1.3",
+    "prettier": "^2.8.8",
+    "sinon": "^15.1.0",
+    "supertest": "^6.3.3"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
