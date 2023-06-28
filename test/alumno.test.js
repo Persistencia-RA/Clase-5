@@ -3,6 +3,7 @@ const expect = chai.expect;
 const request = require('supertest');
 const sinon = require('sinon');
 const models = require('../models');
+const config = require('../config');
 
 // Archivo de entrada de la API
 const app = require('../app.js');
@@ -10,6 +11,7 @@ const app = require('../app.js');
 describe('// Test de Alumnos //', () => {
   before(() => {
     console.log(''); // Salto de línea
+    config.testEnv = 'true';
   });
   describe('GETALL /alumno', () => {
     it('Debería devolver un array con todos los alumnos', async () => {
