@@ -58,6 +58,7 @@ router.get('/', (req, res, next) => {
   models.carrera
     .findAndCountAll({
       attributes: ['id', 'nombre'],
+      distinct: true,
       include: [
         {
           model: models.materia,

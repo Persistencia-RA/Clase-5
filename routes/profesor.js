@@ -72,6 +72,7 @@ router.get('/', (req, res, next) => {
   models.profesor
     .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
+      distinct: true,
       include: [
         { as: 'materia', model: models.materia, attributes: ['nombre'] },
       ],

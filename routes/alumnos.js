@@ -90,6 +90,7 @@ router.get('/', (req, res, next) => {
   models.alumno
     .findAndCountAll({
       attributes: ['id', 'nombre', 'apellido'],
+      distinct: true,
       include: [
         {
           model: models.carrera,
