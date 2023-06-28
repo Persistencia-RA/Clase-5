@@ -90,6 +90,7 @@ router.get('/', (req, res, next) => {
   models.materia
     .findAndCountAll({
       attributes: ['id', 'nombre'],
+      distinct: true,
       include: [
         {
           model: models.aula,
