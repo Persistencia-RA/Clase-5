@@ -29,15 +29,51 @@ Asegúrate de tener instalado lo siguiente en tu entorno de desarrollo:
 - Docker (opcional, para contenerizar la aplicación) [Descargar Docker](https://www.docker.com/)
 
 ## Configuración
-Sigue los pasos a continuación para configurar y ejecutar la API:
 
-1. [Clona el repositorio de GitHub: git clone](https://github.com/tu-usuario/tu-repositorio.git)
-1. Instala las dependencias del proyecto: npm install
-1. Crea un archivo .env en la raíz del proyecto y define las variables de entorno necesarias, como las credenciales de la base de datos y el token de acceso.
-1. Inicia el contenedor de Docker para la base de datos MariaDB
-1. Ejecuta las migraciones y los seeds para inicializar la base de datos
-1. Inicia la API: npm start
-1. La API estará disponible en http://localhost:3001/api/#/
+**Variables de entornos**:
+
+[Ejemplo de variable de entorno](./.env_ejemplo)
+
+```
+# Base de datos
+DATABASENAME = 'api'
+DATABASEUSER = 'root'
+DATABASEPASSWORD = 'root'
+DATABASEHOST = 'localhost'
+DATABASEPORT = 3310
+DATABASEDIALECT = 'mariadb'
+SECRET = '1234'
+TEST = "false"
+#Api
+PORT = 5000
+```
+
+## Arrancar el proyecto
+
+**Descargar las dependencias**:
+```
+ npm i
+```
+
+**Crear la base de datos con docker**:
+```
+docker-compose up -d
+```
+
+**Craer las tablas**:
+```
+npm run migrate
+```
+
+**Poblar las tablas**:
+```
+ npm run seed
+```
+
+**Iniciar el proyecto**:
+```
+ npm run start
+```
 
 ## Uso de la API
 
@@ -59,9 +95,33 @@ Antes de utilizar los servicios de la API, asegúrate de iniciar sesión y obten
 
 Para acceder a los servicios protegidos debe tener un usuario y una contraseña para acceder al Token de acceso.
 
+
 ## Ejecución de pruebas
 
-Se han implementado pruebas unitarias para garantizar el correcto funcionamiento de la API. 
+Se han implementado pruebas unitarias para garantizar el correcto funcionamiento de la API.
+
+**Usuarios de prueba**:
+
+**Usuario 1**:
+
+```
+nombre: 'ValentinoChap'
+contraseña: '123456'
+```
+
+**Usuario 2**:
+
+```
+nombre: 'LucasBona'
+contraseña: '123456'
+```
+
+**Usuario 3**:
+
+```
+nombre: 'JulietaNog'
+contraseña: '123456'
+```
 
 ## Creadores
 - ***Bonadeo Lucas*** @lucasbonadeo
