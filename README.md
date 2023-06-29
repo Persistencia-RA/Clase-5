@@ -28,6 +28,30 @@ Asegúrate de tener instalado lo siguiente en tu entorno de desarrollo:
 - MariaDB: [Descargar MariaDB](https://mariadb.org/download/?t=mariadb)
 - Docker (opcional, para contenerizar la aplicación) [Descargar Docker](https://www.docker.com/)
 
+
+
+## Uso de la API
+
+Antes de utilizar los servicios de la API, asegúrate de iniciar sesión y obtener un token de acceso válido. A continuación, se detallan los servicios disponibles:
+
+* **Alumnos**: Permite realizar operaciones CRUD en Alumnos. Cada Alumno está asociado a una Materia.
+
+* **Aulas**: Permite realizar operaciones CRUD en Aulas. Cada Aula está asociada a una Materia.
+
+* **Carreras**: Permite realizar operaciones CRUD en Carreras. Cada Carrera está asociada a una Materia.
+
+* **Materias**: Permite realizar operaciones CRUD en Materias. Cada Materia está asociada a un Alumno, un Aula, un Profesor y una Carrera.
+
+* **Materias Carrera**: Permite realizar operaciones CRUD en la relación entre Materias y Carreras.
+
+* **Notas**: Permite realizar operaciones CRUD en Notas. Cada Nota está asociada a una Materia y a un  Alumno.
+
+* **Profesores**: Permite realizar operaciones CRUD en Profesores. Cada Profesor está asociado a una Materia.
+
+Para acceder a los servicios protegidos debe tener un usuario y una contraseña para acceder al Token de acceso.
+
+
+
 ## Configuración
 
 **Variables de entornos**:
@@ -74,27 +98,6 @@ npm run migrate
 ```
  npm run start
 ```
-
-## Uso de la API
-
-Antes de utilizar los servicios de la API, asegúrate de iniciar sesión y obtener un token de acceso válido. A continuación, se detallan los servicios disponibles:
-
-* **Alumnos**: Permite realizar operaciones CRUD en Alumnos. Cada Alumno está asociado a una Materia.
-
-* **Aulas**: Permite realizar operaciones CRUD en Aulas. Cada Aula está asociada a una Materia.
-
-* **Carreras**: Permite realizar operaciones CRUD en Carreras. Cada Carrera está asociada a una Materia.
-
-* **Materias**: Permite realizar operaciones CRUD en Materias. Cada Materia está asociada a un Alumno, un Aula, un Profesor y una Carrera.
-
-* **Materias Carrera**: Permite realizar operaciones CRUD en la relación entre Materias y Carreras.
-
-* **Notas**: Permite realizar operaciones CRUD en Notas. Cada Nota está asociada a una Materia y a un  Alumno.
-
-* **Profesores**: Permite realizar operaciones CRUD en Profesores. Cada Profesor está asociado a una Materia.
-
-Para acceder a los servicios protegidos debe tener un usuario y una contraseña para acceder al Token de acceso.
-
 
 ## Ejecución de pruebas
 
