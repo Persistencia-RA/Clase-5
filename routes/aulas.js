@@ -217,7 +217,9 @@ router.post('/', verifyToken, (req, res) => {
 router.get('/:id', verifyToken, (req, res) => {
   findAula(req.params.id, {
     onSuccess: (aula) => res.send(aula),
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(400).send('Bad request: no se encontro un aula con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -292,7 +294,9 @@ router.put('/:id', verifyToken, (req, res) => {
       });
   findAula(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un aula con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -330,7 +334,9 @@ router.delete('/:id', verifyToken, (req, res) => {
       .catch(() => res.sendStatus(500));
   findAula(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un aula con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });

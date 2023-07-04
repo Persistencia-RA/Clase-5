@@ -13,11 +13,11 @@ router.post('/registrarse', signupController);
 
 /**
  * @swagger
- * /login/iniciar:
+ * /login/Iniciar:
  *   post:
- *     summary: Iniciar secion
+ *     summary: Iniciar sesión
  *     tags:
- *       - Iniciar secion
+ *       - Iniciar sesión
  *     requestBody:
  *       required: true
  *       content:
@@ -41,7 +41,7 @@ router.post('/registrarse', signupController);
  *               properties:
  *                 token:
  *                   type: string
- *                   description: ID del aula creado
+ *                   description: se inicio sesión
  *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJWYWxlbnRpbm9DaGFwIiwiaWF0IjoxNjg2MTYyMzE1LCJleHAiOjE2ODYyNDg3MTV9.3kUn85JMJ5rkND4sRIYgfeHgk_n7JtubL4pbgCwLpeY
  */
 router.post('/iniciar', signinController);
