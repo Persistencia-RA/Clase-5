@@ -333,7 +333,9 @@ const findAlumno = (id, { onSuccess, onNotFound, onError }) => {
 router.get('/:id', verifyToken, (req, res) => {
   findAlumno(req.params.id, {
     onSuccess: (alumno) => res.send(alumno),
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(400).send('Bad request: no se encontro un alumno con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -402,7 +404,9 @@ router.put('/:id', verifyToken, (req, res) => {
       });
   findAlumno(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un alumno  con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -440,7 +444,9 @@ router.delete('/:id', verifyToken, (req, res) => {
       .catch(() => res.sendStatus(500));
   findAlumno(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un alumno con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });

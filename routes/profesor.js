@@ -244,7 +244,11 @@ const findProfesor = (id, { onSuccess, onNotFound, onError }) => {
 router.get('/:id', verifyToken, (req, res) => {
   findProfesor(req.params.id, {
     onSuccess: (profesor) => res.send(profesor),
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res
+        .status(400)
+        .send('Bad request: no se encontro un profesor con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -321,7 +325,9 @@ router.put('/:id', verifyToken, (req, res) => {
       });
   findProfesor(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un profesor con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });
@@ -358,7 +364,9 @@ router.delete('/:id', verifyToken, (req, res) => {
       .catch(() => res.sendStatus(500));
   findProfesor(req.params.id, {
     onSuccess,
-    onNotFound: () => res.sendStatus(404),
+    onNotFound: () => {
+      res.status(404).send('No se encontro un profesor con ese id');
+    },
     onError: () => res.sendStatus(500),
   });
 });

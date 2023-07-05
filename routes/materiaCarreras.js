@@ -129,7 +129,7 @@ router.get('/:id', verifyToken, (req, res) => {
       if (materiacarrera) {
         res.status(200).json(materiacarrera);
       } else {
-        res.status(404).json({ error: 'Materiacarrera no encontrada' });
+        res.status(404).json({ error: 'MateriaCarrera no encontrada' });
       }
     })
     .catch((err) => {
