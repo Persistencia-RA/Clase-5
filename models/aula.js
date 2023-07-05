@@ -6,8 +6,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     { tableName: 'aula' },
   );
+
+  // Definición de la asociación con otro modelo
   aula.associate = function (models) {
-    aula.hasMany(models.materia);
+    aula.hasMany(models.materia); // Relación uno a muchos, donde un aula puede tener muchas materias
   };
+
   return aula;
 };
